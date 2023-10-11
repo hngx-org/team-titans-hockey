@@ -7,7 +7,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.titans_hockey_challenge.R
 
-class GameFragment : Fragment() {
+class GameFragment : Fragment(
+) {
+    lateinit var a:String
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
