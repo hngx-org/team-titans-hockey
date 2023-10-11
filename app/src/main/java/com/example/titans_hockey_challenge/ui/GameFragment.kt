@@ -9,7 +9,6 @@ import com.example.titans_hockey_challenge.R
 
 class GameFragment : Fragment(
 ) {
-    lateinit var a:String
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
