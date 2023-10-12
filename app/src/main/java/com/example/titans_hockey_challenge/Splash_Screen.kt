@@ -6,15 +6,12 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.view.animation.AnimationUtils
 import com.example.titans_hockey_challenge.databinding.ActivitySpalshScreenBinding
 
 class Splash_Screen : AppCompatActivity() {
     lateinit var binding:ActivitySpalshScreenBinding
 
     var mediaPlayer: MediaPlayer? = null
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySpalshScreenBinding.inflate(layoutInflater)
@@ -23,9 +20,9 @@ class Splash_Screen : AppCompatActivity() {
 
         binding.apply {
             Handler(Looper.getMainLooper()).postDelayed({
-                startActivity(Intent(this@Splash_Screen, Splash2::class.java))
+                startActivity(Intent(this@Splash_Screen, MainActivity::class.java))
                 finish()
-            }, 6600)
+            }, 6000)
 
             Handler(Looper.getMainLooper()).postDelayed({
                 mediaPlayer?.start()
