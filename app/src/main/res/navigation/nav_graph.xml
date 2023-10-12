@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/gameFragment">
+    app:startDestination="@id/hockeyFragment">
 
     <fragment
         android:id="@+id/gameFragment"
@@ -11,7 +11,7 @@
         android:label="fragment_game"
         tools:layout="@layout/fragment_game" >
         <action
-            android:id="@+id/action_gameFragment_to_hockeyFragment"
+            android:id="@+id/to_hockeyFragment"
             app:destination="@id/hockeyFragment" />
     </fragment>
     <fragment
@@ -20,7 +20,7 @@
         android:label="fragment_hockey"
         tools:layout="@layout/fragment_hockey" >
         <action
-            android:id="@+id/action_hockeyFragment_to_gameFragment"
+            android:id="@+id/to_gameFragment"
             app:destination="@id/gameFragment" />
     </fragment>
 </navigation>
