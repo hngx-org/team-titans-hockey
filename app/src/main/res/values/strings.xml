@@ -51,4 +51,9 @@
     <string name="player">Player</string>
     <string name="opponent">Opponent</string>
     <string name="ready">Ready!</string>
+    <string name="single_player">Single Player</string>
+    <string name="multi_player">Multi-Player</string>
+    <string name="hockey_challenge">Hockey Challenge</string>
+    <string name="hockey">Hockey</string>
+    <string name="challenge">Challenge</string>
 </resources>
