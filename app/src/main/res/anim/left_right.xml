@@ -16,7 +16,4 @@
             android:duration="3000"
             android:startOffset="3000" />
     </set>
-
-
-
 </set>

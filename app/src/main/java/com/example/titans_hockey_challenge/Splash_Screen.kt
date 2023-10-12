@@ -28,9 +28,6 @@ class Splash_Screen : AppCompatActivity() {
                 mediaPlayer?.start()
             }, 1500)
 
-
         }
-
-
     }
 }
