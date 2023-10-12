@@ -8,34 +8,18 @@
 
 
 
-
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="180dp"
-        android:layout_height="180dp"
-        android:src="@drawable/hockeyicon"
-        app:layout_constraintBottom_toTopOf="@+id/appName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed" />
-
-
-    <TextView
-        android:id="@+id/appName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="72dp"
-        android:fontFamily="@font/press_start_2p"
-        android:text="@string/hockey_challenge"
-        android:textSize="25sp"
-        android:theme="@style/txt"
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/splashlottie"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:lottie_rawRes="@raw/puckanim"
+        app:lottie_autoPlay="true"
+        android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/imageView2" />
-
-
+        app:layout_constraintTop_toTopOf="parent"
+        />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
