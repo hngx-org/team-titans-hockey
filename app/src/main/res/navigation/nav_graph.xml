@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/starterFragment">
+    app:startDestination="@id/hockeyFragment">
 
     <fragment
         android:id="@+id/gameFragment"
@@ -11,7 +11,7 @@
         android:label="fragment_game"
         tools:layout="@layout/fragment_game" >
         <action
-            android:id="@+id/action_gameFragment_to_hockeyFragment2"
+            android:id="@+id/to_hockeyFragment"
             app:destination="@id/hockeyFragment" />
     </fragment>
     <fragment
@@ -20,18 +20,7 @@
         android:label="fragment_hockey"
         tools:layout="@layout/fragment_hockey" >
         <action
-            android:id="@+id/action_hockeyFragment_to_gameFragment2"
+            android:id="@+id/to_gameFragment"
             app:destination="@id/gameFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/starterFragment"
-        android:name="com.example.titans_hockey_challenge.starterFragment"
-        android:label="fragment_starter"
-        tools:layout="@layout/fragment_starter" >
-        <action
-            android:id="@+id/action_starterFragment_to_gameFragment2"
-            app:destination="@id/gameFragment"
-            app:enterAnim="@android:anim/fade_in"
-            app:exitAnim="@android:anim/fade_out" />
     </fragment>
 </navigation>

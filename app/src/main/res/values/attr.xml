@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="HockeyTable">
+        <attr name="racketHeight" format="integer" />
+        <attr name="racketWidth" format="integer" />
+        <attr name="puckRadius" format="integer"/>
+    </declare-styleable>
+</resources>

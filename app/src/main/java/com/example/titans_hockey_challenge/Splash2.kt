@@ -9,7 +9,7 @@ import android.view.animation.AnimationUtils
 import com.example.titans_hockey_challenge.databinding.Splash2Binding
 
 class Splash2 : AppCompatActivity() {
-   /* lateinit var binding: Splash2Binding
+    lateinit var binding: Splash2Binding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = Splash2Binding.inflate(layoutInflater)
@@ -28,7 +28,5 @@ class Splash2 : AppCompatActivity() {
             )
 
         }
-
-    }*/
-
+    }
 }
