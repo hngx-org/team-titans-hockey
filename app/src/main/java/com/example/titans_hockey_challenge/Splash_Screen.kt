@@ -1,6 +1,7 @@
 package com.example.titans_hockey_challenge
 
 import android.content.Intent
+import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -10,20 +11,25 @@ import com.example.titans_hockey_challenge.databinding.ActivitySpalshScreenBindi
 
 class Splash_Screen : AppCompatActivity() {
     lateinit var binding:ActivitySpalshScreenBinding
+
+    var mediaPlayer: MediaPlayer? = null
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySpalshScreenBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val imgAnim = AnimationUtils.loadAnimation(this,R.anim.slide)
-        val btmAnim = AnimationUtils.loadAnimation(this,R.anim.btm)
+        mediaPlayer = MediaPlayer.create(this, R.raw.air_hockey_4)
 
         binding.apply {
-            imageView2.startAnimation(imgAnim)
-            appName.startAnimation(btmAnim)
             Handler(Looper.getMainLooper()).postDelayed({
-                startActivity(Intent(this@Splash_Screen, MainActivity::class.java))
+                startActivity(Intent(this@Splash_Screen, Splash2::class.java))
                 finish()
-            }, 3000)
+            }, 6600)
+
+            Handler(Looper.getMainLooper()).postDelayed({
+                mediaPlayer?.start()
+            }, 1500)
 
 
         }
