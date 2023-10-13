@@ -6,7 +6,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
     tools:context=".ui.SettingsFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -64,7 +63,7 @@
             android:layout_marginTop="30dp"
             android:fontFamily="@font/press_start_2p"
             android:text="@string/how_to_play"
-            android:textColor="@color/white"
+            android:theme="@style/txt"
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
