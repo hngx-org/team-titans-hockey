@@ -10,13 +10,17 @@ import com.example.titans_hockey_challenge.utils.GameThread
 
 class HockeyFragment : Fragment() {
     private var mGameThread: GameThread? = null
-    private lateinit var binding: FragmentHockeyBinding
+
+    private var _binding: FragmentHockeyBinding? = null
+    private val binding get() = _binding !!
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-        binding = FragmentHockeyBinding.inflate(inflater, container, false)
+        _binding = FragmentHockeyBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -29,5 +33,10 @@ class HockeyFragment : Fragment() {
         hockeyTable.setStatus(binding.tvStatus)
 
         mGameThread = hockeyTable.game
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 }
