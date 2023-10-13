@@ -29,7 +29,7 @@ class GameFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.apply {
-            mediaPlayer = MediaPlayer.create(requireContext(), R.raw.soundtrack1)
+            mediaPlayer = MediaPlayer.create(requireContext(), R.raw.soundtrack)
             mediaPlayer?.isLooping = true
 
                 if (isSoundOn) {
@@ -67,7 +67,7 @@ class GameFragment : Fragment() {
 
         if (isSoundOn) {
             if (mediaPlayer == null) {
-                mediaPlayer = MediaPlayer.create(requireContext(), R.raw.soundtrack1)
+                mediaPlayer = MediaPlayer.create(requireContext(), R.raw.soundtrack)
                 mediaPlayer?.isLooping = true
                 mediaPlayer?.setOnPreparedListener {
                     mediaPlayer?.start()
