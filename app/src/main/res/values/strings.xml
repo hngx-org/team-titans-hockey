@@ -43,6 +43,41 @@
         libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="mode_win">You Won</string>
+    <string name="mode_loss">You Lose</string>
+    <string name="mode_paused">Paused</string>
+    <string name="player">Player</string>
+    <string name="opponent">Opponent</string>
+    <string name="ready">Ready!</string>
+    <string name="single_player">1 Player</string>
+    <string name="multi_player">2-Players</string>
+    <string name="hockey_challenge">Hockey Challenge</string>
+    <string name="hockey">Hockey</string>
+    <string name="challenge">Challenge</string>
+    <string name="settings">Settings</string>
+    <string name="devs">👨‍💻 Daniel Chinedum Iroka - Lead Developer\nDaniel is our visionary lead developer who spearheaded the creation of Hockey Challenge ensuring the game\'s mechanics are true to the real thing.\nWith a passion for gaming and a wealth of experience, he\'s the driving force behind the game\'s design and development. From crafting the gameplay mechanics to ensuring a seamless user experience,\nDaniel\'s dedication and expertise shine through every aspect of the game.\n\n\n👩‍💻 Omolara Idowu - Developer\nOmolara is a key member of our development team, working alongside Daniel to bring Hockey Challenge to life. Her technical expertise and dedication to quality coding ensure that the game runs smoothly and flawlessly.\nWhether it\'s optimizing performance or adding new features, Omolara\'s contributions are instrumental in making the game a success.\n\n\n👩‍💻 Chinaza Blossom - Graphics and Sound Design:\nChinaza is responsible for the game\'s visual appeal and sound design, creating an immersive hockey atmosphere.\nChinaza is the maestro of sound design, responsible for the captivating audio elements that make the game come alive. With a keen ear for detail, She\'s the one behind the thrilling background music, and atmospheric audio that enhance your gaming experience. Chinaza\'s work adds depth and excitement to Hockey Challenge.
+</string>
+    <string name="feat">- Single-Player Mode: Test your skills against AI opponents. From novice to pro, the AI will keep you on your toes.\n- Multiplayer Mode: Challenge your friends or players from around the world in real-time multiplayer matches. Compete to become the reigning Air hockey ace.\n- Customization: Personalize your gameplay experience with a wide range of paddle and puck designs. Stand out on the arena with style.\n- Realistic Physics: Enjoy physics-based gameplay that simulates the true dynamics of air hockey.\n-Easy Controls: Play with smooth and intuitive touch controls. It\'s easy to learn, yet challenging to master.
+</string>
+
+
+
+    <string name="abt">Hockey Challenge is an exhilarating hockey game that delivers thrilling and competitive gameplay and promises to bring the excitement of the classic air hockey arcade game to your mobile device.\nTake on the challenge in both single-player mode, facing off against AI opponents, and multiplayer mode, where you can go head-to-head with real opponents for the ultimate hockey showdown.</string>
+
+    <string name="how_to_pay">Settings</string>
+    <string name="obj">The objective of an air hockey game app is to score goals by shooting the puck into your opponent\'s goal while defending your own goal.</string>
+
+    <string name="gmPlay">- Once the game starts, a virtual puck will be placed at the center of the table on your screen.\n- Use your finger to control your virtual mallet. Move it left and right to hit the puck and send it towards your opponent\'s goal.\n- Your objective is to score goals by sending the virtual puck into the opponent\'s goal. In some apps, the virtual puck may have special features, such as bouncing off walls or obstacles, making the game more challenging and exciting.\n- Defend your own goal by positioning your virtual mallet to block the opponent\'s shots.\n- The game is typically played for a set amount of time or until a certain number of goals are scored.\n- The player who reaches the predetermined goal count first or has the most points when the game ends is the winner.
+    </string>
+
+
+    <string name="strategies">- Stay focused and use quick reflexes to control your virtual mallet and the virtual puck.\n- Learn the movement patterns of the virtual puck and practice your timing.\n- Defend your goal while trying to score in your opponent\'s goal.\n\n\nAir hockey game apps are designed for fun and entertainment. They offer a convenient way to enjoy the excitement of air hockey on your mobile device. Whether you\'re playing against the computer or challenging friends in multiplayer mode, air hockey apps provide an enjoyable gaming experience.
+    </string>
+    <string name="sound"><![CDATA[\<Sound\>]]></string>
+    <string name="on"><![CDATA[<ON>]]></string>
+    <string name="how_to_play"><![CDATA[<How To Play>]]></string>
+    <string name="about"><![CDATA[<About>]]></string>
+
+
 </resources>

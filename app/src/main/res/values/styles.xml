@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="txt" parent="Theme.Material3.DayNight.NoActionBar" >
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="btnPlayer" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">#DC1A1A</item>
+    </style>
+
+    <style name="btnOpp" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">#1554F3</item>
+    </style>
+
+    <style name="btnSettings" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">#373A38</item>
+    </style>
+
+</resources>
