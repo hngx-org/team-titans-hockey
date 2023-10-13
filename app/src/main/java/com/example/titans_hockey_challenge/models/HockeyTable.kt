@@ -3,8 +3,9 @@ package com.example.titans_hockey_challenge.models
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
-import android.graphics.DashPathEffect
 import android.graphics.Paint
+import android.graphics.Path
+import android.graphics.RectF
 import android.os.Handler
 import android.os.Message
 import android.util.AttributeSet
@@ -35,6 +36,7 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
     var puck: Puck? = null
         private set
     private var mNetPaint: Paint? = null
+    private var mGoalPostBoundsPaint: Paint? = null
     private var mTableBoundsPaint: Paint? = null
     private var mTableWidth = 0
     private var mTableHeight = 0
@@ -42,7 +44,8 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
     var mHolder: SurfaceHolder? = null
     private var mAiMoveProbability = 0f
     private var moving = false
-    private var mlastTouchY = 0f
+    private var mLastTouchY = 0f
+    private var mLastTouchX = 0f
 
     fun initHockeyTable(ctx: Context, attr: AttributeSet?) {
         mContext = ctx
@@ -63,62 +66,86 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
         })
 
         val a = ctx.obtainStyledAttributes(attr, R.styleable.HockeyTable)
-        val racketHeight = a.getInteger(R.styleable.HockeyTable_racketHeight, 440)
-        val racketWidth = a.getInteger(R.styleable.HockeyTable_racketWidth, 50)
-        val puckRadius = a.getInteger(R.styleable.HockeyTable_puckRadius, 35)
+        val strikerHeight = a.getInteger(R.styleable.HockeyTable_racketHeight, 150)
+        val strikerWidth = a.getInteger(R.styleable.HockeyTable_racketWidth, 150)
+        val puckRadius = a.getInteger(R.styleable.HockeyTable_puckRadius, 40)
 
         // Set Player
         val playerPaint = Paint()
         playerPaint.isAntiAlias = true
         playerPaint.color = ContextCompat.getColor(mContext!!, R.color.player_color)
-        paddle = Paddle(racketWidth, racketHeight, paint = playerPaint)
+
+        val playerMiddlePaint = Paint()
+        playerMiddlePaint.isAntiAlias = true
+        playerMiddlePaint.style = Paint.Style.FILL
+        playerMiddlePaint.color = ContextCompat.getColor(mContext!!, R.color.player_middle_color)
+
+        val playerOuterPaint = Paint()
+        playerOuterPaint.style = Paint.Style.FILL
+        playerOuterPaint.color = ContextCompat.getColor(mContext!!, R.color.player_outer_color)
+        paddle = Paddle(strikerWidth, strikerHeight, paint = playerPaint, middlePaint = playerMiddlePaint, outerPaint = playerOuterPaint)
 
         // Set Opponent
         val opponentPaint = Paint()
         opponentPaint.isAntiAlias = true
         opponentPaint.color = ContextCompat.getColor(mContext!!, R.color.opponent_color)
-        mOpponent = Paddle(racketWidth, racketHeight, paint = opponentPaint)
+
+        val opponentMiddlePaint = Paint()
+        opponentMiddlePaint.isAntiAlias = true
+        opponentMiddlePaint.style = Paint.Style.FILL
+        opponentMiddlePaint.color = ContextCompat.getColor(mContext!!, R.color.opponent_middle_color)
+
+        val opponentOuterPaint = Paint()
+        opponentOuterPaint.style = Paint.Style.FILL
+        opponentOuterPaint.color = ContextCompat.getColor(mContext!!, R.color.opponent_outer_color)
+        mOpponent = Paddle(strikerWidth, strikerHeight, paint = opponentPaint, middlePaint = opponentMiddlePaint, outerPaint = opponentOuterPaint)
 
         // Set Puck
         val puckPaint = Paint()
-        puckPaint.isAntiAlias = true
         puckPaint.color = ContextCompat.getColor(mContext!!, R.color.puck_color)
         puck = Puck(puckRadius.toFloat(), puckPaint)
 
-        // Draw Middle lines
+        // Draw circular and middle line
         mNetPaint = Paint()
         mNetPaint!!.isAntiAlias = true
         mNetPaint!!.color = Color.BLACK
         mNetPaint!!.alpha = 100
-        mNetPaint!!.style = Paint.Style.FILL_AND_STROKE
-        mNetPaint!!.strokeWidth = 10f
-        mNetPaint!!.pathEffect = DashPathEffect(floatArrayOf(5f, 5f), 0f)
-
-        // Draw circular line
-        mNetPaint = Paint()
-        mNetPaint!!.isAntiAlias = true
-        mNetPaint!!.color = Color.RED
-        mNetPaint!!.alpha = 100
         mNetPaint!!.style = Paint.Style.STROKE
         mNetPaint!!.strokeWidth = 10f
-        mNetPaint!!.pathEffect = DashPathEffect(floatArrayOf(5f, 5f), 0f)
 
         // Draw Bounds
         mTableBoundsPaint = Paint()
         mTableBoundsPaint!!.isAntiAlias = true
         mTableBoundsPaint!!.style = Paint.Style.STROKE
-        mTableBoundsPaint!!.strokeWidth = 15f
+        mTableBoundsPaint!!.strokeWidth = 35f
         mAiMoveProbability = 0.8f
 
+        // Draw Goal post
+        mGoalPostBoundsPaint = Paint()
+        mGoalPostBoundsPaint!!.isAntiAlias = true
+        mGoalPostBoundsPaint!!.color = Color.BLACK
+        mGoalPostBoundsPaint!!.strokeWidth = 38f
     }
 
     override fun draw(canvas: Canvas) {
         super.draw(canvas)
         canvas.drawColor(ContextCompat.getColor(mContext!!, R.color.table_color))
-        canvas.drawRect(
-            0f, 0f, mTableWidth.toFloat(), mTableHeight.toFloat(),
-            mTableBoundsPaint!!
+
+        // Draw Hockey board with rounded corners
+        val cornerRadius = 30f
+        val rectF = RectF(0f, 0f, mTableWidth.toFloat(), mTableHeight.toFloat())
+        val radii = floatArrayOf(
+            cornerRadius, cornerRadius,
+            cornerRadius, cornerRadius,
+            cornerRadius, cornerRadius,
+            cornerRadius, cornerRadius
         )
+
+        val path = Path()
+        path.addRoundRect(rectF, radii, Path.Direction.CW)
+        canvas.drawPath(path, mTableBoundsPaint!!)
+
+        // Draw middle line
         val middle = mTableWidth / 2
         canvas.drawLine(
             middle.toFloat(), 1f, middle.toFloat(), (mTableHeight - 1).toFloat(),
@@ -130,11 +157,30 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
         val radius = minOf(middle, mTableHeight / 4) - 5f
         canvas.drawCircle(middle.toFloat(), centerY, radius, mNetPaint!!)
 
+        // Draw goal post line
+        // left goal post
+        val leftGoalPostX = 10f
+        val goalPostY1 = centerY - radius
+        val goalPostY2 = centerY + radius
+        canvas.drawLine(leftGoalPostX, goalPostY1, leftGoalPostX, goalPostY2, mGoalPostBoundsPaint!!)
+        canvas.drawLine(430f, 1f, 430f, (mTableHeight - 1).toFloat(), mNetPaint!!)
+        canvas.drawCircle(leftGoalPostX, centerY, radius, mNetPaint!!)
+
+        // right goal post
+        val rightGoalPostX = mTableWidth - 10f
+        canvas.drawLine(rightGoalPostX, goalPostY1, rightGoalPostX, goalPostY2, mGoalPostBoundsPaint!!)
+        canvas.drawLine(mTableWidth - 430f, 1f, mTableWidth - 430f, (mTableHeight - 1).toFloat(), mNetPaint!!)
+        canvas.drawCircle(rightGoalPostX, centerY, radius, mNetPaint!!)
+
+        // Todo - When I come back tomorrow, I will work on pausing the game state with the pause button,
+        //  Second try to make the ai move in any direction but also towards the ball, Third add in game sound effects for the paddles and puck as well as in-game music.
+        // Todo - I will also try to do these features in order of importance as respect to the limited time available
+
         game!!.setScoreText(
             paddle!!.score.toString(), mOpponent!!.score.toString()
         )
-        paddle!!.draw(canvas)
-        mOpponent!!.draw(canvas)
+        paddle!!.drawCircle(canvas)
+        mOpponent!!.drawCircle(canvas)
         puck!!.draw(canvas)
     }
 
@@ -181,13 +227,13 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
 
     private fun doAI() {
         if (mOpponent!!.bounds.top > puck!!.centerY) {
-            movePlayer(
+            movePaddle(
                 mOpponent,
                 mOpponent!!.bounds.left,
                 mOpponent!!.bounds.top - RACQUET_SPEED
             )
         } else if (mOpponent!!.bounds.top + mOpponent!!.requestHeight < puck!!.centerY) {
-            movePlayer(
+            movePaddle(
                 mOpponent,
                 mOpponent!!.bounds.left,
                 mOpponent!!.bounds.top + RACQUET_SPEED
@@ -213,7 +259,6 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
         puck!!.movePuck(canvas!!)
         doAI()
     }
-
 
     private fun checkCollisionPaddle(paddle: Paddle?, puck: Puck?): Boolean {
         return paddle!!.bounds.intersects(
@@ -254,14 +299,18 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
                 } else {
                     if (isTouchOnRacket(event, paddle)) {
                         moving = true
-                        mlastTouchY = event.y
+                        mLastTouchX = event.x
+                        mLastTouchY = event.y
                     }
                 }
                 MotionEvent.ACTION_MOVE -> if (moving) {
+                    val x = event.x
                     val y = event.y
-                    val dy = y - mlastTouchY
-                    mlastTouchY = y
-                    movePaddleRacquet(dy, paddle)
+                    val dx = x - mLastTouchX
+                    val dy = y - mLastTouchY
+                    mLastTouchX = x
+                    mLastTouchY = y
+                    movePaddleStriker(dx, dy, paddle)
                 }
                 MotionEvent.ACTION_UP -> moving = false
             }
@@ -272,6 +321,7 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
                 }
             }
         }
+        invalidate()
         return true
     }
 
@@ -279,32 +329,31 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
         return mPaddle!!.bounds.contains(event.x, event.y)
     }
 
-    private fun movePaddleRacquet(dy: Float, paddle: Paddle?) {
+    private fun movePaddleStriker(dx: Float, dy: Float, paddle: Paddle?) {
         synchronized(mHolder!!) {
             if (paddle === this.paddle) {
-                movePlayer(paddle, paddle!!.bounds.left, paddle.bounds.top + dy)
+                movePaddle(paddle, paddle!!.bounds.left + dx, paddle.bounds.top + dy)
             } else if (paddle === mOpponent) {
-                movePlayer(paddle, paddle!!.bounds.left, paddle.bounds.top + dy)
+                movePaddle(paddle, paddle!!.bounds.left, paddle.bounds.top + dy)
             }
         }
     }
 
-
     @Synchronized
-    fun movePlayer(player: Paddle?, left: Float, top: Float) {
+    fun movePaddle(paddle: Paddle?, left: Float, top: Float) {
         var left = left
         var top = top
         if (left < 2) {
             left = 2f
-        } else if (left + player!!.requestWidth >= mTableWidth - 2) {
-            left = (mTableWidth - player.requestWidth - 2).toFloat()
+        } else if (left + paddle!!.requestWidth >= mTableWidth - 2) {
+            left = (mTableWidth - paddle.requestWidth - 2).toFloat()
         }
         if (top < 0) {
             top = 0f
-        } else if (top + player!!.requestHeight >= mTableHeight) {
-            top = (mTableHeight - player.requestHeight - 1).toFloat()
+        } else if (top + paddle!!.requestHeight >= mTableHeight) {
+            top = (mTableHeight - paddle.requestHeight - 1).toFloat()
         }
-        player!!.bounds.offsetTo(left, top)
+        paddle!!.bounds.offsetTo(left, top)
     }
 
     fun setupTable() {
