@@ -163,18 +163,12 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
         val goalPostY1 = centerY - radius
         val goalPostY2 = centerY + radius
         canvas.drawLine(leftGoalPostX, goalPostY1, leftGoalPostX, goalPostY2, mGoalPostBoundsPaint!!)
-        canvas.drawLine(430f, 1f, 430f, (mTableHeight - 1).toFloat(), mNetPaint!!)
         canvas.drawCircle(leftGoalPostX, centerY, radius, mNetPaint!!)
 
         // right goal post
         val rightGoalPostX = mTableWidth - 10f
         canvas.drawLine(rightGoalPostX, goalPostY1, rightGoalPostX, goalPostY2, mGoalPostBoundsPaint!!)
-        canvas.drawLine(mTableWidth - 430f, 1f, mTableWidth - 430f, (mTableHeight - 1).toFloat(), mNetPaint!!)
         canvas.drawCircle(rightGoalPostX, centerY, radius, mNetPaint!!)
-
-        // Todo - When I come back tomorrow, I will work on pausing the game state with the pause button,
-        //  Second try to make the ai move in any direction but also towards the ball, Third add in game sound effects for the paddles and puck as well as in-game music.
-        // Todo - I will also try to do these features in order of importance as respect to the limited time available
 
         game!!.setScoreText(
             paddle!!.score.toString(), mOpponent!!.score.toString()
