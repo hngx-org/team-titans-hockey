@@ -56,7 +56,10 @@ class GameFragment : Fragment() {
 
         }
 
+
+
     }
+
 
 
     fun toggleSound() {
