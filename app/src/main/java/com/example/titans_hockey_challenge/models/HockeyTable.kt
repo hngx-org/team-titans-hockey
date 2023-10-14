@@ -163,13 +163,11 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
         val goalPostY1 = centerY - radius
         val goalPostY2 = centerY + radius
         canvas.drawLine(leftGoalPostX, goalPostY1, leftGoalPostX, goalPostY2, mGoalPostBoundsPaint!!)
-        canvas.drawLine(430f, 1f, 430f, (mTableHeight - 1).toFloat(), mNetPaint!!)
         canvas.drawCircle(leftGoalPostX, centerY, radius, mNetPaint!!)
 
         // right goal post
         val rightGoalPostX = mTableWidth - 10f
         canvas.drawLine(rightGoalPostX, goalPostY1, rightGoalPostX, goalPostY2, mGoalPostBoundsPaint!!)
-        canvas.drawLine(mTableWidth - 430f, 1f, mTableWidth - 430f, (mTableHeight - 1).toFloat(), mNetPaint!!)
         canvas.drawCircle(rightGoalPostX, centerY, radius, mNetPaint!!)
 
         game!!.setScoreText(
