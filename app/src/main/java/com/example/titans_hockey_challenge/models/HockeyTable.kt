@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.RectF
+import android.media.MediaPlayer
 import android.os.Handler
 import android.os.Message
 import android.util.AttributeSet
@@ -46,6 +47,15 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
     private var moving = false
     private var mLastTouchY = 0f
     private var mLastTouchX = 0f
+
+    private var mediaPlayer: MediaPlayer? = null
+    private var puckHitSound: MediaPlayer? = null
+    private var winningSound: MediaPlayer? = null
+    private var losingSound: MediaPlayer? = null
+    private var wallHitSound: MediaPlayer? = null
+    private var goalPostHitSound: MediaPlayer? = null
+
+
 
     fun initHockeyTable(ctx: Context, attr: AttributeSet?) {
         mContext = ctx
@@ -147,10 +157,7 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
 
         // Draw middle line
         val middle = mTableWidth / 2
-        canvas.drawLine(
-            middle.toFloat(), 1f, middle.toFloat(), (mTableHeight - 1).toFloat(),
-            mNetPaint!!
-        )
+        canvas.drawLine(middle.toFloat(), 1f, middle.toFloat(), (mTableHeight - 1).toFloat(), mNetPaint!!)
 
         // Draw circular line
         val centerY = mTableHeight.toFloat() / 2
@@ -188,11 +195,7 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
         initHockeyTable(context, attrs)
     }
 
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
-        context,
-        attrs,
-        defStyleAttr
-    ) {
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
         initHockeyTable(context, attrs)
     }
 
@@ -201,12 +204,7 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
         game!!.start()
     }
 
-    override fun surfaceChanged(
-        surfaceHolder: SurfaceHolder,
-        format: Int,
-        width: Int,
-        height: Int
-    ) {
+    override fun surfaceChanged(surfaceHolder: SurfaceHolder, format: Int, width: Int, height: Int) {
         mTableWidth = width
         mTableHeight = height
         game!!.setUpNewRound()
@@ -215,6 +213,10 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
     override fun surfaceDestroyed(surfaceHolder: SurfaceHolder) {
         var retry = true
         game!!.setRunning(false)
+
+        pauseBackgroundSound()
+        releaseSounds()
+
         while (retry) {
             try {
                 game!!.join()
@@ -227,17 +229,9 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
 
     private fun doAI() {
         if (mOpponent!!.bounds.top > puck!!.centerY) {
-            movePaddle(
-                mOpponent,
-                mOpponent!!.bounds.left,
-                mOpponent!!.bounds.top - RACQUET_SPEED
-            )
+            movePaddle(mOpponent, mOpponent!!.bounds.left, mOpponent!!.bounds.top - RACQUET_SPEED)
         } else if (mOpponent!!.bounds.top + mOpponent!!.requestHeight < puck!!.centerY) {
-            movePaddle(
-                mOpponent,
-                mOpponent!!.bounds.left,
-                mOpponent!!.bounds.top + RACQUET_SPEED
-            )
+            movePaddle(mOpponent, mOpponent!!.bounds.left, mOpponent!!.bounds.top + RACQUET_SPEED)
         }
     }
 
@@ -248,11 +242,14 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
             handleCollision(mOpponent, puck)
         } else if (checkCollisionWithTopOrBottomWall()) {
             puck!!.velocityY = -puck!!.velocityY
+            playWallHitSound()
         } else if (checkCollisionWithLeftWall()) {
             game!!.setState(STATE_LOSE)
+            playLosingSound()
             return
         } else if (checkCollisionWithRightWall()) {
             game!!.setState(STATE_WIN)
+            playWinningSound()
             return
         }
         if (Random(System.currentTimeMillis()).nextFloat() < mAiMoveProbability) doAI()
@@ -260,13 +257,16 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
         doAI()
     }
 
+    private fun playWallHitSound() {
+        if (wallHitSound == null) {
+            wallHitSound = MediaPlayer.create(mContext, R.raw.hitting_wall)
+        }
+        wallHitSound?.start()
+    }
+
+
     private fun checkCollisionPaddle(paddle: Paddle?, puck: Puck?): Boolean {
-        return paddle!!.bounds.intersects(
-            puck!!.centerX - puck.radius,
-            puck.centerY - puck.radius,
-            puck.centerX + puck.radius,
-            puck.centerY + puck.radius
-        )
+        return paddle!!.bounds.intersects(puck!!.centerX - puck.radius, puck.centerY - puck.radius, puck.centerX + puck.radius, puck.centerY + puck.radius)
     }
 
     private fun checkCollisionWithTopOrBottomWall(): Boolean {
@@ -281,6 +281,9 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
         return puck!!.centerX + puck!!.radius >= mTableWidth - 1
     }
 
+
+
+
     private fun handleCollision(paddle: Paddle?, puck: Puck?) {
         puck!!.velocityX = -puck.velocityX * 1.05f
         if (paddle === this.paddle) {
@@ -289,6 +292,44 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
             puck.centerX = mOpponent!!.bounds.left - puck.radius
             RACQUET_SPEED *= 1.05f
         }
+        playPuckHitSound()
+
+    }
+
+    private fun playWinningSound() {
+        mediaPlayer?.stop()
+        mediaPlayer?.release()
+        mediaPlayer = null
+        if (winningSound == null) {
+            playGoalPostHitSound()
+            winningSound = MediaPlayer.create(mContext, R.raw.yay)
+        }
+        winningSound?.start()
+    }
+
+    private fun playGoalPostHitSound() {
+        if (goalPostHitSound == null) {
+            goalPostHitSound = MediaPlayer.create(mContext, R.raw.scoring)
+        }
+        goalPostHitSound?.start()
+    }
+
+    private fun playLosingSound() {
+        mediaPlayer?.stop()
+        mediaPlayer?.release()
+        mediaPlayer = null
+        if (losingSound == null) {
+            playGoalPostHitSound()
+            losingSound = MediaPlayer.create(mContext, R.raw.aww)
+        }
+        losingSound?.start()
+    }
+
+    private fun playPuckHitSound() {
+        if (puckHitSound == null) {
+            puckHitSound = MediaPlayer.create(mContext, R.raw.hockey_puck_hit_sound_effect)
+        }
+        puckHitSound?.start()
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -296,6 +337,8 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> if (game!!.isBetweenRounds) {
                     game!!.setState(STATE_RUNNING)
+
+                    playStartGameSound()
                 } else {
                     if (isTouchOnRacket(event, paddle)) {
                         moving = true
@@ -318,6 +361,7 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
             if (event.action == MotionEvent.ACTION_DOWN) {
                 if (game!!.isBetweenRounds) {
                     game!!.setState(STATE_RUNNING)
+                    playStartGameSound()
                 }
             }
         }
@@ -328,6 +372,20 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
     private fun isTouchOnRacket(event: MotionEvent, mPaddle: Paddle?): Boolean {
         return mPaddle!!.bounds.contains(event.x, event.y)
     }
+
+    private fun playStartGameSound() {
+        if (mediaPlayer == null) {
+            mediaPlayer = MediaPlayer.create(mContext, R.raw.soundtrack2)
+        }
+        mediaPlayer?.start()
+    }
+
+    private fun pauseBackgroundSound() {
+        if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
+            mediaPlayer?.pause()
+        }
+    }
+
 
     private fun movePaddleStriker(dx: Float, dy: Float, paddle: Paddle?) {
         synchronized(mHolder!!) {
@@ -355,6 +413,8 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
         }
         paddle!!.bounds.offsetTo(left, top)
     }
+
+
 
     fun setupTable() {
         placePuck()
@@ -396,4 +456,13 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
     fun setTableBoundsColor(color: Int) {
         mTableBoundsPaint!!.color = color
     }
+
+
+    private fun releaseSounds() {
+        puckHitSound?.release()
+        winningSound?.release()
+        losingSound?.release()
+    }
+
+
 }
