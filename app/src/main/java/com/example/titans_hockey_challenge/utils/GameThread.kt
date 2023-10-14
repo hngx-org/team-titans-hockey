@@ -80,7 +80,7 @@ class GameThread(
                         mHockeyTable.setTableBoundsColor(ContextCompat.getColor(mCtx, R.color.player_color))
                     } else {
                         mHockeyTable.getMOpponent()!!.score++
-                        mHockeyTable.setTableBoundsColor(ContextCompat.getColor(mCtx, R.color.opponent_color))
+                        mHockeyTable.setTableBoundsColor(ContextCompat.getColor(mCtx, R.color.player_color))
                     }
                     setUpNewRound()
                     switchTurn()
@@ -92,7 +92,7 @@ class GameThread(
                         mHockeyTable.setTableBoundsColor(ContextCompat.getColor(mCtx, R.color.opponent_color))
                     } else {
                         mHockeyTable.paddle!!.score++
-                        mHockeyTable.setTableBoundsColor(ContextCompat.getColor(mCtx, R.color.player_color))
+                        mHockeyTable.setTableBoundsColor(ContextCompat.getColor(mCtx, R.color.opponent_color))
                     }
                     setUpNewRound()
                     switchTurn()

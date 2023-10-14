@@ -32,6 +32,10 @@ class HockeyFragment : Fragment() {
         hockeyTable.setScorePlayer(binding.tvScorePlayer)
         hockeyTable.setStatus(binding.tvStatus)
 
+        binding.imgPauseButton.setOnClickListener {
+            hockeyTable.pauseGame()
+        }
+
         mGameThread = hockeyTable.game
     }
 

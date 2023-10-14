@@ -172,10 +172,6 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
         canvas.drawLine(mTableWidth - 430f, 1f, mTableWidth - 430f, (mTableHeight - 1).toFloat(), mNetPaint!!)
         canvas.drawCircle(rightGoalPostX, centerY, radius, mNetPaint!!)
 
-        // Todo - When I come back tomorrow, I will work on pausing the game state with the pause button,
-        //  Second try to make the ai move in any direction but also towards the ball, Third add in game sound effects for the paddles and puck as well as in-game music.
-        // Todo - I will also try to do these features in order of importance as respect to the limited time available
-
         game!!.setScoreText(
             paddle!!.score.toString(), mOpponent!!.score.toString()
         )
@@ -241,6 +237,14 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
         }
     }
 
+//} else if (checkCollisionWithLeftWall()) {
+//    game!!.setState(STATE_LOSE)
+//    return
+//} else if (checkCollisionWithRightWall()) {
+//    game!!.setState(STATE_WIN)
+//    return
+//}
+
     fun update(canvas: Canvas?) {
         if (checkCollisionPaddle(paddle, puck)) {
             handleCollision(paddle, puck)
@@ -248,10 +252,12 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
             handleCollision(mOpponent, puck)
         } else if (checkCollisionWithTopOrBottomWall()) {
             puck!!.velocityY = -puck!!.velocityY
-        } else if (checkCollisionWithLeftWall()) {
+        } else if (checkCollisionWithLeftOrRightWall()) {
+            puck!!.velocityX = -puck!!.velocityX
+        } else if(checkCollisionWithLeftGoalPost()) {
             game!!.setState(STATE_LOSE)
             return
-        } else if (checkCollisionWithRightWall()) {
+        } else if (checkCollisionWithRightGoalPost()) {
             game!!.setState(STATE_WIN)
             return
         }
@@ -273,12 +279,27 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
         return puck!!.centerY <= puck!!.radius || puck!!.centerY + puck!!.radius >= mTableHeight - 1
     }
 
-    private fun checkCollisionWithLeftWall(): Boolean {
-        return puck!!.centerX <= puck!!.radius
+    private fun checkCollisionWithLeftOrRightWall() : Boolean {
+        return puck!!.centerX <= puck!!.radius || puck!!.centerX + puck!!.radius >= mTableWidth - 1
     }
 
-    private fun checkCollisionWithRightWall(): Boolean {
-        return puck!!.centerX + puck!!.radius >= mTableWidth - 1
+//    private fun checkCollisionWithLeftWall(): Boolean {
+//        return puck!!.centerX <= puck!!.radius
+//    }
+//
+//    private fun checkCollisionWithRightWall(): Boolean {
+//        return puck!!.centerX + puck!!.radius >= mTableWidth - 1
+//    }
+
+    // TODO - FIXME - Fix this Implementation as it doesn't seem to work.
+    private fun checkCollisionWithLeftGoalPost() : Boolean {
+        val goalPostX = 430f
+        return puck!!.centerX - puck!!.radius <= goalPostX && puck!!.centerX + puck!!.radius >= goalPostX
+    }
+
+    private fun checkCollisionWithRightGoalPost() : Boolean {
+        val goalPostX = 430f
+        return puck!!.centerX - puck!!.radius <= mTableHeight - goalPostX && puck!!.centerX + puck!!.radius >= mTableHeight - goalPostX
     }
 
     private fun handleCollision(paddle: Paddle?, puck: Puck?) {
@@ -375,6 +396,10 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
         puck!!.centerY = (mTableHeight / 2).toFloat()
         puck!!.velocityY = puck!!.velocityY / abs(puck!!.velocityY) * PUCK_SPEED
         puck!!.velocityX = puck!!.velocityX / abs(puck!!.velocityX) * PUCK_SPEED
+    }
+
+    fun pauseGame() {
+        // Do the logic of pausing the game here.
     }
 
     fun getMOpponent(): Paddle? {
