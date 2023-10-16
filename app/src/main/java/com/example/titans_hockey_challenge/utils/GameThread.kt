@@ -23,7 +23,6 @@ class GameThread(
     private var mRun = false
     private var mGameState = STATE_READY
     private val mRunLock: Any = Any()
-    private var isPlayerTurn = true
 
     override fun run() {
         var mNextGameTick = SystemClock.uptimeMillis()
@@ -67,7 +66,6 @@ class GameThread(
 
     fun setState(state: Int) {
         synchronized(mSurfaceHolder) {
-            isPlayerTurn = !isPlayerTurn
             mGameState = state
             val res = mCtx.resources
             when (mGameState) {
@@ -75,35 +73,19 @@ class GameThread(
                 STATE_RUNNING -> hideStatusText()
                 STATE_WIN -> {
                     setStatusText(res.getString(R.string.mode_win))
-                    if (isPlayerTurn) {
-                        mHockeyTable.paddle!!.score++
-                        mHockeyTable.setTableBoundsColor(ContextCompat.getColor(mCtx, R.color.player_color))
-                    } else {
-                        mHockeyTable.getMOpponent()!!.score++
-                        mHockeyTable.setTableBoundsColor(ContextCompat.getColor(mCtx, R.color.opponent_color))
-                    }
+                    mHockeyTable.paddle!!.score++
+                    mHockeyTable.setTableBoundsColor(ContextCompat.getColor(mCtx, R.color.player_color))
                     setUpNewRound()
-                    switchTurn()
                 }
                 STATE_LOSE -> {
                     setStatusText(res.getString(R.string.mode_loss))
-                    if (isPlayerTurn) {
-                        mHockeyTable.getMOpponent()!!.score++
-                        mHockeyTable.setTableBoundsColor(ContextCompat.getColor(mCtx, R.color.opponent_color))
-                    } else {
-                        mHockeyTable.paddle!!.score++
-                        mHockeyTable.setTableBoundsColor(ContextCompat.getColor(mCtx, R.color.player_color))
-                    }
+                    mHockeyTable.getMOpponent()!!.score++
+                    mHockeyTable.setTableBoundsColor(ContextCompat.getColor(mCtx, R.color.opponent_color))
                     setUpNewRound()
-                    switchTurn()
                 }
                 STATE_PAUSED -> setStatusText(res.getString(R.string.mode_paused))
             }
         }
-    }
-
-    fun switchTurn() {
-        isPlayerTurn = !isPlayerTurn
     }
 
     fun setUpNewRound() {
