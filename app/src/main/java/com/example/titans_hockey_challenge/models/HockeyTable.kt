@@ -24,6 +24,7 @@ import com.example.titans_hockey_challenge.utils.STATE_RUNNING
 import com.example.titans_hockey_challenge.utils.STATE_WIN
 import java.util.Random
 import kotlin.math.abs
+import kotlin.math.sqrt
 
 class HockeyTable : SurfaceView, SurfaceHolder.Callback {
     var game: GameThread? = null
@@ -229,19 +230,34 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
         }
     }
 
+//    else if (checkCollisionWithLeftWall()) {
+//        game!!.setState(STATE_LOSE)
+//        playLosingSound()
+//        return
+//    } else if (checkCollisionWithRightWall()) {
+//        game!!.setState(STATE_WIN)
+//        playWinningSound()
+//        return
+//    }
+
     fun update(canvas: Canvas?) {
         if (checkCollisionPaddle(paddle, puck)) {
             handleCollision(paddle, puck)
         } else if (checkCollisionPaddle(mOpponent, puck)) {
             handleCollision(mOpponent, puck)
         } else if (checkCollisionWithTopOrBottomWall()) {
+            // resets the puck's Y velocity
             puck!!.velocityY = -puck!!.velocityY
             playWallHitSound()
-        } else if (checkCollisionWithLeftWall()) {
+        } else if (checkCollisionWithLeftOrRightWall()) {
+            // resets the puck's X velocity
+            puck!!.velocityX = -puck!!.velocityX
+            playWallHitSound()
+        } else if (checkCollisionWithLeftGoalPost()) {
             game!!.setState(STATE_LOSE)
             playLosingSound()
             return
-        } else if (checkCollisionWithRightWall()) {
+        } else if (checkCollisionWithRightGoalPost()) {
             game!!.setState(STATE_WIN)
             playWinningSound()
             return
@@ -267,15 +283,40 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
         return puck!!.centerY <= puck!!.radius || puck!!.centerY + puck!!.radius >= mTableHeight - 1
     }
 
-    private fun checkCollisionWithLeftWall(): Boolean {
-        return puck!!.centerX <= puck!!.radius
+    private fun checkCollisionWithLeftOrRightWall() : Boolean {
+        return puck!!.centerX<= puck!!.radius || puck!!.centerX + puck!!.radius >= mTableWidth - 1
     }
 
-    private fun checkCollisionWithRightWall(): Boolean {
-        return puck!!.centerX + puck!!.radius >= mTableWidth - 1
+    // TODO - NOTE! THIS IS STILL UNDER DEVELOPMENT..
+    private fun checkCollisionWithLeftGoalPost() : Boolean {
+        val goalPostX = 10f
+        val centerY = mTableHeight.toFloat() / 2
+        val distance = calculateDistance(puck!!.centerX, puck!!.centerY, goalPostX, centerY)
+        val radius = minOf(mTableWidth / 2, mTableHeight / 4) - 5f
+        return distance <= puck!!.radius
     }
 
+    private fun checkCollisionWithRightGoalPost() : Boolean {
+        val goalPostX = mTableWidth - 10f
+        val centerY = mTableHeight.toFloat() / 2
+        val distance = calculateDistance(puck!!.centerX, puck!!.centerY, goalPostX, centerY)
+        val radius = minOf(mTableWidth / 2, mTableHeight / 4) - 5f
+        return distance <= puck!!.radius
+    }
 
+    private fun calculateDistance(x1: Float, y1: Float, x2: Float, y2: Float): Float {
+        val dx = x1 - x2
+        val dy = y1 - y2
+        return sqrt(dx * dx + dy * dy)
+    }
+
+//    private fun checkCollisionWithLeftWall(): Boolean {
+//        return puck!!.centerX <= puck!!.radius
+//    }
+//
+//    private fun checkCollisionWithRightWall(): Boolean {
+//        return puck!!.centerX + puck!!.radius >= mTableWidth - 1
+//    }
 
 
     private fun handleCollision(paddle: Paddle?, puck: Puck?) {
