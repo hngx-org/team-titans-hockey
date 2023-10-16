@@ -4,10 +4,7 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import com.example.titans_hockey_challenge.utils.PUCK_SPEED
 
-class Puck(
-    val radius: Float,
-    private val paint: Paint
-) {
+class Puck(val radius: Float, private val paint: Paint) {
     var centerX = 0f
     var centerY = 0f
     var velocityX: Float = PUCK_SPEED

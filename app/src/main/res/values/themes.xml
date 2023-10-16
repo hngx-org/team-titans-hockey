@@ -6,6 +6,7 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
 
 
+
     </style>
 
     <style name="Theme.Titans_Hockey_Challenge" parent="Base.Theme.Titans_Hockey_Challenge" />
