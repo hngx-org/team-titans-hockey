@@ -20,7 +20,7 @@ class GameThread(
 
 ) : Thread() {
     private val mSensorsOn = false
-    private var mRun = false
+    var mRun = false
     private var mGameState = STATE_READY
     private val mRunLock: Any = Any()
 
