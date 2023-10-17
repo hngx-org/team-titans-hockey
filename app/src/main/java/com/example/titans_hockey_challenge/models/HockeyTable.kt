@@ -405,14 +405,14 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
         return mPaddle!!.bounds.contains(event.x, event.y)
     }
 
-    private fun playStartGameSound() {
+    fun playStartGameSound() {
         if (mediaPlayer == null) {
             mediaPlayer = MediaPlayer.create(mContext, R.raw.soundtrack2)
         }
         mediaPlayer?.start()
     }
 
-    private fun pauseBackgroundSound() {
+    fun pauseBackgroundSound() {
         if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
             mediaPlayer?.pause()
         }
