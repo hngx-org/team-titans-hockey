@@ -20,6 +20,7 @@ import com.example.titans_hockey_challenge.utils.GameThread
 import com.example.titans_hockey_challenge.utils.PUCK_SPEED
 import com.example.titans_hockey_challenge.utils.RACQUET_SPEED
 import com.example.titans_hockey_challenge.utils.STATE_LOSE
+import com.example.titans_hockey_challenge.utils.STATE_PAUSED
 import com.example.titans_hockey_challenge.utils.STATE_RUNNING
 import com.example.titans_hockey_challenge.utils.STATE_WIN
 import java.util.Random
@@ -113,7 +114,10 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
         // Set Puck
         val puckPaint = Paint()
         puckPaint.color = ContextCompat.getColor(mContext!!, R.color.puck_color)
-        puck = Puck(puckRadius.toFloat(), puckPaint)
+
+        val puckInnerPaint = Paint()
+        puckInnerPaint.color = ContextCompat.getColor(mContext!!, R.color.dark_gray)
+        puck = Puck(puckRadius.toFloat(), puckPaint, puckInnerPaint)
 
         // Draw circular and middle line
         mNetPaint = Paint()
@@ -135,55 +139,57 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
         mGoalPostBoundsPaint!!.isAntiAlias = true
         mGoalPostBoundsPaint!!.color = Color.BLACK
         mGoalPostBoundsPaint!!.style = Paint.Style.STROKE
-        mGoalPostBoundsPaint!!.strokeWidth = 28f
+        mGoalPostBoundsPaint!!.strokeWidth = 35f
     }
 
     override fun draw(canvas: Canvas) {
         super.draw(canvas)
-        canvas.drawColor(ContextCompat.getColor(mContext!!, R.color.table_color))
+        if (!game!!.isPaused) {
+            canvas.drawColor(ContextCompat.getColor(mContext!!, R.color.table_color))
 
-        // Draw Hockey board with rounded corners
-        val cornerRadius = 50f
-        val rectF = RectF(0f, 0f, mTableWidth.toFloat(), mTableHeight.toFloat())
-        val radii = floatArrayOf(
-            cornerRadius, cornerRadius,
-            cornerRadius, cornerRadius,
-            cornerRadius, cornerRadius,
-            cornerRadius, cornerRadius
-        )
+            // Draw Hockey board with rounded corners
+            val cornerRadius = 50f
+            val rectF = RectF(0f, 0f, mTableWidth.toFloat(), mTableHeight.toFloat())
+            val radii = floatArrayOf(
+                cornerRadius, cornerRadius,
+                cornerRadius, cornerRadius,
+                cornerRadius, cornerRadius,
+                cornerRadius, cornerRadius
+            )
 
-        val path = Path()
-        path.addRoundRect(rectF, radii, Path.Direction.CW)
-        canvas.drawPath(path, mTableBoundsPaint!!)
+            val path = Path()
+            path.addRoundRect(rectF, radii, Path.Direction.CW)
+            canvas.drawPath(path, mTableBoundsPaint!!)
 
-        // Draw middle line
-        val middle = mTableWidth / 2
-        canvas.drawLine(middle.toFloat(), 1f, middle.toFloat(), (mTableHeight - 1).toFloat(), mNetPaint!!)
+            // Draw middle line
+            val middle = mTableWidth / 2
+            canvas.drawLine(middle.toFloat(), 1f, middle.toFloat(), (mTableHeight - 1).toFloat(), mNetPaint!!)
 
-        // Draw circular line
-        val centerY = mTableHeight.toFloat() / 2
-        val radius = minOf(middle, mTableHeight / 4) - 5f
-        canvas.drawCircle(middle.toFloat(), centerY, radius, mNetPaint!!)
+            // Draw circular line
+            val centerY = mTableHeight.toFloat() / 2
+            val radius = minOf(middle, mTableHeight / 4) - 6f
+            canvas.drawCircle(middle.toFloat(), centerY, radius, mNetPaint!!)
 
-        // Draw goal post line
-        // left goal post
-        val leftGoalPostX = 10f
-        val goalPostY1 = centerY - radius
-        val goalPostY2 = centerY + radius
-        canvas.drawLine(leftGoalPostX, goalPostY1, leftGoalPostX, goalPostY2, mGoalPostBoundsPaint!!)
-        canvas.drawCircle(leftGoalPostX, centerY, radius, mNetPaint!!)
+            // Draw goal post line
+            // left goal post
+            val leftGoalPostX = 1f
+            val goalPostY1 = centerY - radius
+            val goalPostY2 = centerY + radius
+            canvas.drawLine(leftGoalPostX, goalPostY1, leftGoalPostX, goalPostY2, mGoalPostBoundsPaint!!)
+            canvas.drawCircle(leftGoalPostX, centerY, radius, mNetPaint!!)
 
-        // right goal post
-        val rightGoalPostX = mTableWidth - 10f
-        canvas.drawLine(rightGoalPostX, goalPostY1, rightGoalPostX, goalPostY2, mGoalPostBoundsPaint!!)
-        canvas.drawCircle(rightGoalPostX, centerY, radius, mNetPaint!!)
+            // right goal post
+            val rightGoalPostX = mTableWidth.toFloat() - 1
+            canvas.drawLine(rightGoalPostX, goalPostY1, rightGoalPostX, goalPostY2, mGoalPostBoundsPaint!!)
+            canvas.drawCircle(rightGoalPostX, centerY, radius, mNetPaint!!)
 
-        game!!.setScoreText(
-            paddle!!.score.toString(), mOpponent!!.score.toString()
-        )
-        paddle!!.drawCircle(canvas)
-        mOpponent!!.drawCircle(canvas)
-        puck!!.draw(canvas)
+            game!!.setScoreText(
+                paddle!!.score.toString(), mOpponent!!.score.toString()
+            )
+            paddle!!.drawCircle(canvas)
+            mOpponent!!.drawCircle(canvas)
+            puck!!.draw(canvas)
+        }
     }
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
@@ -252,37 +258,32 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
 
 
     fun update(canvas: Canvas?) {
-        if (checkCollisionPaddle(paddle, puck)) {
-            handleCollision(paddle, puck)
-        } else if (checkCollisionPaddle(mOpponent, puck)) {
-            handleCollision(mOpponent, puck)
-        } else if (checkCollisionWithTopOrBottomWall()) {
-            // resets the puck's Y velocity
-            puck!!.velocityY = -puck!!.velocityY
-            playWallHitSound()
-        } else if (checkCollisionWithLeftOrRightWall()) {
-            // resets the puck's X velocity
-            puck!!.velocityX = -puck!!.velocityX
-            playWallHitSound()
-        } else if (checkCollisionWithLeftGoalPost()) {
-            game!!.setState(STATE_LOSE)
-            playLosingSound()
-            return
-        } else if (checkCollisionWithRightGoalPost()) {
-            game!!.setState(STATE_WIN)
-            playWinningSound()
-            return
+        if (!game!!.isPaused) {
+            if (checkCollisionPaddle(paddle, puck)) {
+                handleCollision(paddle, puck)
+            } else if (checkCollisionPaddle(mOpponent, puck)) {
+                handleCollision(mOpponent, puck)
+            } else if (checkCollisionWithTopOrBottomWall()) {
+                // resets the puck's Y velocity
+                puck!!.velocityY = -puck!!.velocityY
+                playWallHitSound()
+            } else if (checkCollisionWithLeftOrRightWall()) {
+                // resets the puck's X velocity
+                puck!!.velocityX = -puck!!.velocityX
+                playWallHitSound()
+            } else if (checkCollisionWithLeftGoalPost()) {
+                game!!.setState(STATE_LOSE)
+                playLosingSound()
+                return
+            } else if (checkCollisionWithRightGoalPost()) {
+                game!!.setState(STATE_WIN)
+                playWinningSound()
+                return
+            }
+            if (Random(System.currentTimeMillis()).nextFloat() < mAiMoveProbability) doAI()
+            puck!!.movePuck(canvas!!)
+            doAI()
         }
-        if (Random(System.currentTimeMillis()).nextFloat() < mAiMoveProbability) doAI()
-        puck!!.movePuck(canvas!!)
-        doAI()
-    }
-
-    private fun playWallHitSound() {
-        if (wallHitSound == null) {
-            wallHitSound = MediaPlayer.create(mContext, R.raw.hitting_wall)
-        }
-        wallHitSound?.start()
     }
 
     private fun checkCollisionPaddle(paddle: Paddle?, puck: Puck?): Boolean {
@@ -308,7 +309,7 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
     }
 
     private fun handleCollision(paddle: Paddle?, puck: Puck?) {
-        // Reverse the X velocity which sorts of bounces it back
+        // Reverses the X velocity which sorts of bounces it back
         puck!!.velocityX = -puck.velocityX
 
         // Adjust the Y velocity to maintain a constant speed
@@ -328,6 +329,19 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
         playPuckHitSound()
     }
 
+    fun playStartGameSound() {
+        if (mediaPlayer == null) {
+            mediaPlayer = MediaPlayer.create(mContext, R.raw.soundtrack2)
+        }
+        mediaPlayer?.start()
+    }
+
+    fun pauseBackgroundSound() {
+        if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
+            mediaPlayer?.pause()
+        }
+    }
+
     private fun playWinningSound() {
         mediaPlayer?.stop()
         mediaPlayer?.release()
@@ -337,13 +351,6 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
             winningSound = MediaPlayer.create(mContext, R.raw.yay)
         }
         winningSound?.start()
-    }
-
-    private fun playGoalPostHitSound() {
-        if (goalPostHitSound == null) {
-            goalPostHitSound = MediaPlayer.create(mContext, R.raw.scoring)
-        }
-        goalPostHitSound?.start()
     }
 
     private fun playLosingSound() {
@@ -357,11 +364,25 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
         losingSound?.start()
     }
 
+    private fun playGoalPostHitSound() {
+        if (goalPostHitSound == null) {
+            goalPostHitSound = MediaPlayer.create(mContext, R.raw.scoring)
+        }
+        goalPostHitSound?.start()
+    }
+
     private fun playPuckHitSound() {
         if (puckHitSound == null) {
             puckHitSound = MediaPlayer.create(mContext, R.raw.hockey_puck_hit_sound_effect)
         }
         puckHitSound?.start()
+    }
+
+    private fun playWallHitSound() {
+        if (wallHitSound == null) {
+            wallHitSound = MediaPlayer.create(mContext, R.raw.hitting_wall)
+        }
+        wallHitSound?.start()
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -405,19 +426,6 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
         return mPaddle!!.bounds.contains(event.x, event.y)
     }
 
-    fun playStartGameSound() {
-        if (mediaPlayer == null) {
-            mediaPlayer = MediaPlayer.create(mContext, R.raw.soundtrack2)
-        }
-        mediaPlayer?.start()
-    }
-
-    fun pauseBackgroundSound() {
-        if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
-            mediaPlayer?.pause()
-        }
-    }
-
     private fun movePaddleStriker(dx: Float, dy: Float, paddle: Paddle?) {
         synchronized(mHolder!!) {
             if (paddle === this.paddle) {
@@ -445,8 +453,6 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
         paddle!!.bounds.offsetTo(left, top)
     }
 
-
-
     fun setupTable() {
         placePuck()
         placePaddles()
@@ -466,6 +472,13 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
         puck!!.centerY = (mTableHeight / 2).toFloat()
         puck!!.velocityY = puck!!.velocityY / abs(puck!!.velocityY) * PUCK_SPEED
         puck!!.velocityX = puck!!.velocityX / abs(puck!!.velocityX) * PUCK_SPEED
+    }
+
+    fun resumeGame() {
+        if (game!!.isBetweenRounds) {
+            game!!.setRunning(true)
+            game!!.setState(STATE_RUNNING)
+        }
     }
 
     fun getMOpponent(): Paddle? {
