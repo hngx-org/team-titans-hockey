@@ -5,10 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import com.example.titans_hockey_challenge.R
 import com.example.titans_hockey_challenge.databinding.FragmentHockeyBinding
 import com.example.titans_hockey_challenge.models.HockeyTable
 import com.example.titans_hockey_challenge.utils.GameThread
-import com.example.titans_hockey_challenge.utils.STATE_RUNNING
 
 class HockeyFragment : Fragment() {
     private var mGameThread: GameThread? = null
@@ -26,39 +27,27 @@ class HockeyFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         hockeyTable = binding.hockeyTable
+
         hockeyTable.setScoreOpponent(binding.tvScoreOpponent)
         hockeyTable.setScorePlayer(binding.tvScorePlayer)
         hockeyTable.setStatus(binding.tvStatus)
-
         mGameThread = hockeyTable.game
 
         binding.imgPauseButton.setOnClickListener {
-            if (mGameThread?.isBetweenRounds == true) {
-                mGameThread?.setState(STATE_RUNNING)
-                hockeyTable.playStartGameSound()
-            } else {
-                if (mGameThread?.mRun == true) {
-                    // Pause the game
-                    mGameThread?.setRunning(false)
-                    hockeyTable.pauseBackgroundSound()
-                    binding.overlay.visibility = View.VISIBLE
-                } else {
-                    // Resume the game
-                    mGameThread?.setRunning(true)
-                    hockeyTable.playStartGameSound()
-                    binding.overlay.visibility = View.GONE
-                }
-            }
+            mGameThread?._pause()
+            hockeyTable.pauseBackgroundSound()
+            binding.pauseOverlay.visibility = View.VISIBLE
         }
 
-       binding.resumeGame.setOnClickListener {
-            mGameThread?.setState(STATE_RUNNING)
+        binding.resumeGame.setOnClickListener {
+            mGameThread?._resume()
+            hockeyTable.resumeGame()
             hockeyTable.playStartGameSound()
-            binding.overlay.visibility = View.GONE
+            binding.pauseOverlay.visibility = View.INVISIBLE
         }
 
         binding.exitGame.setOnClickListener {
-            activity?.finish()
+            findNavController().popBackStack(R.id.gameFragment, false)
         }
     }
 

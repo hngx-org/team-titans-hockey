@@ -16,10 +16,12 @@
     <color name="opponent_middle_color">#00008B</color>
     <color name="opponent_outer_color">#0000B4</color>
 
-
-
     // puck and table color
     <color name="puck_color">#FF000000</color>
     <color name="table_color">#FFFFFFFF</color>
 
+    // gray variations
+    <color name="dark_gray">#FF373A38</color>
+    <color name="semi_transparent_white">#80FFFFFF</color>
+    <color name="semi_transparent_light_gray">#80CCCCCC</color>
 </resources>
