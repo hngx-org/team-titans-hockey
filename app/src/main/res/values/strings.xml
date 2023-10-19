@@ -39,6 +39,7 @@
     </string>
     <string name="sound"><![CDATA[\<Sound\>]]></string>
     <string name="on"><![CDATA[<ON>]]></string>
+    <string name="off"><![CDATA[<OFF>]]></string>
     <string name="how_to_play"><![CDATA[<How To Play>]]></string>
     <string name="about"><![CDATA[<About>]]></string>
     <string name="exit_game">Exit Game</string>
