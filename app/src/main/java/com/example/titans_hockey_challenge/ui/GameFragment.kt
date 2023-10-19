@@ -52,15 +52,10 @@ class GameFragment : Fragment() {
                 findNavController().navigate(R.id.settingsFragment)
             }
 
-        findNavController().popBackStack(R.id.starterFragment,true)
+            findNavController().popBackStack(R.id.starterFragment,true)
 
         }
-
-
-
     }
-
-
 
     fun toggleSound() {
         isSoundOn = !isSoundOn
@@ -84,13 +79,8 @@ class GameFragment : Fragment() {
     }
 
 
-
-
-
     override fun onDestroyView() {
         super.onDestroyView()
         mediaPlayer?.release()
     }
-
-
 }

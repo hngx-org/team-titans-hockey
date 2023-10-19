@@ -1,7 +1,7 @@
 package com.example.titans_hockey_challenge.utils
 
-var RACQUET_SPEED = 20f
-const val PUCK_SPEED = 20f
+var RACQUET_SPEED = 15f
+const val PUCK_SPEED = 30f
 
 const val STATE_READY = 0
 const val STATE_PAUSED = 1

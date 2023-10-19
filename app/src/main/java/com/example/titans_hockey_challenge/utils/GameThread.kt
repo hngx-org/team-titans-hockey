@@ -20,35 +20,38 @@ class GameThread(
 
 ) : Thread() {
     private val mSensorsOn = false
-    private var mRun = false
+    var mRun = false
     private var mGameState = STATE_READY
     private val mRunLock: Any = Any()
+    var isPaused = false
 
     override fun run() {
         var mNextGameTick = SystemClock.uptimeMillis()
         val skipTicks = 1000 / PHYS_FPS
 
         while (mRun) {
-            var c: Canvas? = null
-            try {
-                c = mSurfaceHolder.lockCanvas(null)
-                if (c != null) {
-                    synchronized(mSurfaceHolder) {
-                        if (mGameState == STATE_RUNNING) {
-                            mHockeyTable.update(c)
-                        }
-                        synchronized(mRunLock) {
-                            if (mRun) {
-                                mHockeyTable.draw(c)
+            if (!isPaused) {
+                var c: Canvas? = null
+                try {
+                    c = mSurfaceHolder.lockCanvas(null)
+                    if (c != null) {
+                        synchronized(mSurfaceHolder) {
+                            if (mGameState == STATE_RUNNING) {
+                                mHockeyTable.update(c)
+                            }
+                            synchronized(mRunLock) {
+                                if (mRun) {
+                                    mHockeyTable.draw(c)
+                                }
                             }
                         }
                     }
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            } finally {
-                if (c != null) {
-                    mSurfaceHolder.unlockCanvasAndPost(c)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                } finally {
+                    if (c != null) {
+                        mSurfaceHolder.unlockCanvasAndPost(c)
+                    }
                 }
             }
 
@@ -83,7 +86,7 @@ class GameThread(
                     mHockeyTable.setTableBoundsColor(ContextCompat.getColor(mCtx, R.color.opponent_color))
                     setUpNewRound()
                 }
-                STATE_PAUSED -> setStatusText(res.getString(R.string.mode_paused))
+//                STATE_PAUSED -> setStatusText(res.getString(R.string.mode_paused))
             }
         }
     }
@@ -98,6 +101,14 @@ class GameThread(
 
     fun sensorsOn(): Boolean {
         return mSensorsOn
+    }
+
+    fun _pause() {
+        isPaused = true
+    }
+
+    fun _resume() {
+        isPaused = false
     }
 
     val isBetweenRounds: Boolean

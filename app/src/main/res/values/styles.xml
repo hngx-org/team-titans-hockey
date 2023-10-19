@@ -14,7 +14,15 @@
     </style>
 
     <style name="btnSettings" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="colorPrimary">#373A38</item>
+        <item name="colorPrimary">@color/dark_gray</item>
+    </style>
+
+    <style name="btnResumeGame" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/dark_gray</item>
+    </style>
+
+    <style name="btnExitGame" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/dark_gray</item>
     </style>
 
 </resources>
