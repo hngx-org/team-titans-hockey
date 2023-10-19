@@ -8,8 +8,8 @@
 
     <com.example.titans_hockey_challenge.models.HockeyTable
         android:id="@+id/hockeyTable"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_margin="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -65,9 +65,9 @@
         android:layout_height="wrap_content"
         android:layout_margin="24dp"
         android:fontFamily="@font/play_bold"
-        android:text="@string/ready"
+        android:text="@string/tap_start_screen"
         android:textColor="@color/black"
-        android:textSize="35sp"
+        android:textSize="32sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -75,4 +75,66 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.7" />
 
+    <LinearLayout
+        android:id="@+id/pauseOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/semi_transparent_white"
+        android:gravity="center"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+        <LinearLayout
+            android:layout_width="300dp"
+            android:layout_height="200dp"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="@drawable/overlay_background"
+            android:padding="10dp">
+
+            <TextView
+                android:id="@+id/paused"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:fontFamily="@font/play_bold"
+                android:text="@string/paused"
+                android:textColor="@color/dark_gray"
+                android:textSize="38sp" />
+
+            <Button
+                android:id="@+id/resumeGame"
+                style="@style/Widget.AppCompat.Button"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/play_regular"
+                android:text="@string/resume_game"
+                android:padding="5dp"
+                android:layout_marginBottom="2dp"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:theme="@style/btnResumeGame" />
+
+            <Button
+                android:id="@+id/exitGame"
+                style="@style/Widget.AppCompat.Button"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/play_regular"
+                android:text="@string/exit_game"
+                android:padding="5dp"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:theme="@style/btnExitGame" />
+
+        </LinearLayout>
+
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
