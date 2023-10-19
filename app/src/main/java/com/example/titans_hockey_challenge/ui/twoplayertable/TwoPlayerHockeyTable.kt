@@ -46,9 +46,14 @@ class TwoPlayerHockeyTable : SurfaceView, SurfaceHolder.Callback {
     private var mContext: Context? = null
     var mHolder: SurfaceHolder? = null
 //    private var mAiMoveProbability = 0f
-    private var moving = false
-    private var mLastTouchY = 0f
-    private var mLastTouchX = 0f
+
+    private var player1Moving = false
+    private var player2Moving = false
+
+    private var mLastPLayer1TouchX = 0f
+    private var mLastPlayer1TouchY = 0f
+    private var mLastPLayer2TouchX = 0f
+    private var mLastPlayer2TouchY = 0f
 
     private var mediaPlayer: MediaPlayer? = null
     private var puckHitSound: MediaPlayer? = null
@@ -215,8 +220,8 @@ class TwoPlayerHockeyTable : SurfaceView, SurfaceHolder.Callback {
         var retry = true
         twoPlayerGame!!.setRunning(false)
 
-//        pauseBackgroundSound()
-//        releaseSounds()
+        pauseBackgroundSound()
+        releaseSounds()
 
         while (retry) {
             try {
@@ -252,7 +257,7 @@ class TwoPlayerHockeyTable : SurfaceView, SurfaceHolder.Callback {
                 return
             }
 //            if (Random(System.currentTimeMillis()).nextFloat() < mAiMoveProbability) doAI()
-//            puck!!.movePuck(canvas!!)
+            puck!!.movePuck(canvas!!)
 //            doAI()
         }
     }
@@ -360,18 +365,50 @@ class TwoPlayerHockeyTable : SurfaceView, SurfaceHolder.Callback {
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         if (!twoPlayerGame!!.sensorsOn()) {
-            when (event.action) {
-                MotionEvent.ACTION_DOWN -> if (twoPlayerGame!!.isBetweenRounds) {
+            when (event.action and event.actionMasked) {
+                MotionEvent.ACTION_DOWN, MotionEvent.ACTION_POINTER_DOWN -> if (twoPlayerGame!!.isBetweenRounds) {
                     twoPlayerGame!!.setState(STATE_RUNNING)
-
                     playStartGameSound()
+
                 } else {
-                    // Do something here...
+                    // retrieving the pointerIndex for the two pointers(fingers) on the screen
+                    val pointerIndex = event.action and MotionEvent.ACTION_POINTER_INDEX_MASK shr MotionEvent.ACTION_POINTER_INDEX_SHIFT
+                    val x = event.getX(pointerIndex)
+                    val y = event.getY(pointerIndex)
+
+                    // all we are doing is basically getting the initial position of both
+                    // pointers on the screen
+                    if (x < mTableWidth / 2) {
+                        player1Moving = true
+                        mLastPLayer1TouchX = x
+                        mLastPlayer1TouchY = y
+                    } else {
+                        player2Moving = true
+                        mLastPLayer2TouchX = x
+                        mLastPlayer2TouchY = y
+                    }
                 }
-                MotionEvent.ACTION_MOVE -> if (moving) {
-                    // Do something here...
+                MotionEvent.ACTION_MOVE -> if (player1Moving) {
+                    val x = event.x
+                    val y = event.y
+                    val dx = x - mLastPLayer1TouchX
+                    val dy = y - mLastPlayer1TouchY
+                    mLastPLayer1TouchX = x
+                    mLastPlayer1TouchY = y
+                    movePaddleStriker1(dx, dy, player1)
+                } else if (player2Moving) {
+                    val x = event.x
+                    val y = event.y
+                    val dx = x - mLastPLayer2TouchX
+                    val dy = y - mLastPlayer2TouchY
+                    mLastPLayer2TouchX = x
+                    mLastPlayer2TouchY = y
+                    movePaddleStriker2(dx, dy, player2)
                 }
-                MotionEvent.ACTION_UP -> moving = false
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_POINTER_UP -> {
+                    player1Moving = false
+                    player2Moving = false
+                }
             }
         } else {
             if (event.action == MotionEvent.ACTION_DOWN) {
@@ -381,23 +418,27 @@ class TwoPlayerHockeyTable : SurfaceView, SurfaceHolder.Callback {
                 }
             }
         }
-//        invalidate()
+        invalidate()
         return true
     }
 
-    private fun isTouchOnRacket(event: MotionEvent, mPaddle: Paddle?): Boolean {
-        return mPaddle!!.bounds.contains(event.x, event.y)
-    }
+//    private fun isTouchOnRacket(event: MotionEvent, mPaddle: Paddle?): Boolean {
+//        return mPaddle!!.bounds.contains(event.x, event.y)
+//    }
 
     private fun movePaddleStriker1(dx: Float, dy: Float, paddle: Paddle?) {
         synchronized(mHolder!!) {
-           // Do something...
+            if (paddle === this.player1) {
+                movePaddle(paddle, paddle!!.bounds.left + dx, paddle.bounds.top + dy)
+            }
         }
     }
 
     private fun movePaddleStriker2(dx: Float, dy: Float, paddle: Paddle?) {
         synchronized(mHolder!!) {
-            // Do something...
+            if (paddle === this.player2) {
+                movePaddle(paddle, paddle!!.bounds.left + dx, paddle.bounds.top + dy)
+            }
         }
     }
 

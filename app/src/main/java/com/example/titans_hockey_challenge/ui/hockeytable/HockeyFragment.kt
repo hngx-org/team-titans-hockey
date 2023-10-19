@@ -42,7 +42,7 @@ class HockeyFragment : Fragment() {
             mGameThread?._resume()
             hockeyTable.resumeGame()
             hockeyTable.playStartGameSound()
-            binding.pauseOverlay.visibility = View.INVISIBLE
+            binding.pauseOverlay.visibility = View.GONE
         }
 
         binding.exitGame.setOnClickListener {

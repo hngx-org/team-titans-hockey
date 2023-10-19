@@ -33,21 +33,22 @@ class TwoPlayerHockeyFragment : Fragment() {
         twoPlayerHockeyTable = binding.twoPlayerHockeyTable
         twoPlayerHockeyTable.setScorePlayer1(binding.tvScorePlayer1)
         twoPlayerHockeyTable.setScorePlayer2(binding.tvScorePlayer2)
+        twoPlayerHockeyTable.setStatus(binding.tvStatus2)
 
-        binding.imgPauseButton.setOnClickListener {
+        binding.imgPauseButton2.setOnClickListener {
             mTwoPlayerGameThread?._pause()
             twoPlayerHockeyTable.pauseBackgroundSound()
-            binding.pauseOverlay.visibility = View.VISIBLE
+            binding.pauseOverlay2.visibility = View.VISIBLE
         }
 
-        binding.resumeGame.setOnClickListener {
+        binding.resumeGame2.setOnClickListener {
             mTwoPlayerGameThread?._resume()
             twoPlayerHockeyTable.resumeGame()
             twoPlayerHockeyTable.playStartGameSound()
-            binding.pauseOverlay.visibility = View.INVISIBLE
+            binding.pauseOverlay2.visibility = View.GONE
         }
 
-        binding.exitGame.setOnClickListener {
+        binding.exitGame2.setOnClickListener {
             findNavController().popBackStack(R.id.gameFragment, false)
         }
     }

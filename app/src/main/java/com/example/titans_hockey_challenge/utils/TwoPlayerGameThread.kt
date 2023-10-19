@@ -7,6 +7,7 @@ import android.os.Handler
 import android.os.SystemClock
 import android.view.SurfaceHolder
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.example.titans_hockey_challenge.R
 import com.example.titans_hockey_challenge.ui.twoplayertable.TwoPlayerHockeyTable
 
@@ -77,13 +78,13 @@ class TwoPlayerGameThread(
                 STATE_WIN -> {
                     setStatusText(res.getString(R.string.mode_win))
                     mTwoPlayerHockeyTable.player1!!.score++
-//                    mTwoPlayerHockeyTable.setTableBoundsColor(ContextCompat.getColor(mCtx, R.color.player_color))
+                    mTwoPlayerHockeyTable.setTableBoundsColor(ContextCompat.getColor(mCtx, R.color.player_color))
                     setUpNewRound()
                 }
                 STATE_LOSE -> {
                     setStatusText(res.getString(R.string.mode_loss))
                     mTwoPlayerHockeyTable.player2!!.score++
-//                    mTwoPlayerHockeyTable.setTableBoundsColor(ContextCompat.getColor(mCtx, R.color.opponent_color))
+                    mTwoPlayerHockeyTable.setTableBoundsColor(ContextCompat.getColor(mCtx, R.color.opponent_color))
                     setUpNewRound()
                 }
             }

@@ -418,7 +418,7 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
                 }
             }
         }
-//        invalidate()
+        invalidate()
         return true
     }
 
