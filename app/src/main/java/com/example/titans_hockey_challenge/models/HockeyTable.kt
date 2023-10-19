@@ -222,11 +222,13 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
     }
 
     private fun doAI() {
+        
         if (mOpponent!!.bounds.top > puck!!.centerY) {
             movePaddle(mOpponent, mOpponent!!.bounds.left, mOpponent!!.bounds.top - RACQUET_SPEED)
         } else if (mOpponent!!.bounds.top + mOpponent!!.requestHeight < puck!!.centerY) {
             movePaddle(mOpponent, mOpponent!!.bounds.left, mOpponent!!.bounds.top + RACQUET_SPEED)
         }
+
     }
 
     fun update(canvas: Canvas?) {
@@ -246,9 +248,11 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
             playWinningSound()
             return
         }
+
         if (Random(System.currentTimeMillis()).nextFloat() < mAiMoveProbability) doAI()
         puck!!.movePuck(canvas!!)
         doAI()
+
     }
 
     private fun playWallHitSound() {
@@ -276,8 +280,6 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
     }
 
 
-
-
     private fun handleCollision(paddle: Paddle?, puck: Puck?) {
         puck!!.velocityX = -puck.velocityX * 1.05f
         if (paddle === this.paddle) {
@@ -286,9 +288,11 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
             puck.centerX = mOpponent!!.bounds.left - puck.radius
             RACQUET_SPEED *= 1.05f
         }
+
         playPuckHitSound()
 
     }
+
 
     private fun playWinningSound() {
         mediaPlayer?.stop()
@@ -298,7 +302,10 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
             playGoalPostHitSound()
             winningSound = MediaPlayer.create(mContext, R.raw.yay)
         }
+
         winningSound?.start()
+
+
     }
 
     private fun playGoalPostHitSound() {
@@ -333,6 +340,8 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
                     game!!.setState(STATE_RUNNING)
 
                     playStartGameSound()
+
+
                 } else {
                     if (isTouchOnRacket(event, paddle)) {
                         moving = true
@@ -355,6 +364,7 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
             if (event.action == MotionEvent.ACTION_DOWN) {
                 if (game!!.isBetweenRounds) {
                     game!!.setState(STATE_RUNNING)
+
                     playStartGameSound()
                 }
             }
