@@ -1,4 +1,4 @@
-package com.example.titans_hockey_challenge.ui
+package com.example.titans_hockey_challenge.ui.hockeytable
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.titans_hockey_challenge.R
 import com.example.titans_hockey_challenge.databinding.FragmentHockeyBinding
-import com.example.titans_hockey_challenge.models.HockeyTable
 import com.example.titans_hockey_challenge.utils.GameThread
 
 class HockeyFragment : Fragment() {
@@ -26,8 +25,8 @@ class HockeyFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        hockeyTable = binding.hockeyTable
 
+        hockeyTable = binding.hockeyTable
         hockeyTable.setScoreOpponent(binding.tvScoreOpponent)
         hockeyTable.setScorePlayer(binding.tvScorePlayer)
         hockeyTable.setStatus(binding.tvStatus)

@@ -13,6 +13,7 @@
     <string name="player">0</string>
     <string name="opponent">1</string>
     <string name="tap_start_screen">Tap Screen to Start</string>
+    <string name="ready">Ready!</string>
     <string name="single_player">1 Player</string>
     <string name="multi_player">2-Players</string>
     <string name="hockey_challenge">Hockey Challenge</string>
@@ -23,7 +24,6 @@
 </string>
     <string name="feat">- Single-Player Mode: Test your skills against AI opponents. From novice to pro, the AI will keep you on your toes.\n- Multiplayer Mode: Challenge your friends or players from around the world in real-time multiplayer matches. Compete to become the reigning Air hockey ace.\n- Customization: Personalize your gameplay experience with a wide range of paddle and puck designs. Stand out on the arena with style.\n- Realistic Physics: Enjoy physics-based gameplay that simulates the true dynamics of air hockey.\n-Easy Controls: Play with smooth and intuitive touch controls. It\'s easy to learn, yet challenging to master.
 </string>
-
 
 
     <string name="abt">Hockey Challenge is an exhilarating hockey game that delivers thrilling and competitive gameplay and promises to bring the excitement of the classic air hockey arcade game to your mobile device.\nTake on the challenge in both single-player mode, facing off against AI opponents, and multiplayer mode, where you can go head-to-head with real opponents for the ultimate hockey showdown.</string>

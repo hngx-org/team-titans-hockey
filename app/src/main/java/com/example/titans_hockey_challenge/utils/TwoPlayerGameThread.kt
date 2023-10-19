@@ -7,22 +7,22 @@ import android.os.Handler
 import android.os.SystemClock
 import android.view.SurfaceHolder
 import android.view.View
-import androidx.core.content.ContextCompat
 import com.example.titans_hockey_challenge.R
-import com.example.titans_hockey_challenge.ui.hockeytable.HockeyTable
+import com.example.titans_hockey_challenge.ui.twoplayertable.TwoPlayerHockeyTable
 
-class GameThread(
+class TwoPlayerGameThread(
     private val mCtx: Context,
     private val mSurfaceHolder: SurfaceHolder,
-    private val mHockeyTable: HockeyTable,
+    private val mTwoPlayerHockeyTable: TwoPlayerHockeyTable,
     private val mGameStatusHandler: Handler,
     private val mScoreHandler: Handler,
 
     ) : Thread() {
+
     private val mSensorsOn = false
     var mRun = false
     private var mGameState = STATE_READY
-    private val mRunLock: Any = Any()
+    private val mRunLock : Any = Any()
     var isPaused = false
 
     override fun run() {
@@ -37,11 +37,11 @@ class GameThread(
                     if (c != null) {
                         synchronized(mSurfaceHolder) {
                             if (mGameState == STATE_RUNNING) {
-                                mHockeyTable.update(c)
+                                mTwoPlayerHockeyTable.update(c)
                             }
                             synchronized(mRunLock) {
                                 if (mRun) {
-                                    mHockeyTable.draw(c)
+                                    mTwoPlayerHockeyTable.draw(c)
                                 }
                             }
                         }
@@ -76,14 +76,14 @@ class GameThread(
                 STATE_RUNNING -> hideStatusText()
                 STATE_WIN -> {
                     setStatusText(res.getString(R.string.mode_win))
-                    mHockeyTable.paddle!!.score++
-                    mHockeyTable.setTableBoundsColor(ContextCompat.getColor(mCtx, R.color.player_color))
+                    mTwoPlayerHockeyTable.player1!!.score++
+//                    mTwoPlayerHockeyTable.setTableBoundsColor(ContextCompat.getColor(mCtx, R.color.player_color))
                     setUpNewRound()
                 }
                 STATE_LOSE -> {
                     setStatusText(res.getString(R.string.mode_loss))
-                    mHockeyTable.getMOpponent()!!.score++
-                    mHockeyTable.setTableBoundsColor(ContextCompat.getColor(mCtx, R.color.opponent_color))
+                    mTwoPlayerHockeyTable.player2!!.score++
+//                    mTwoPlayerHockeyTable.setTableBoundsColor(ContextCompat.getColor(mCtx, R.color.opponent_color))
                     setUpNewRound()
                 }
             }
@@ -91,7 +91,7 @@ class GameThread(
     }
 
     fun setUpNewRound() {
-        synchronized(mSurfaceHolder) { mHockeyTable.setupTable() }
+        synchronized(mSurfaceHolder) { mTwoPlayerHockeyTable.setupTable() }
     }
 
     fun setRunning(running: Boolean) {
@@ -130,12 +130,13 @@ class GameThread(
         mGameStatusHandler.sendMessage(msg)
     }
 
-    fun setScoreText(playerScore: String?, opponentScore: String?) {
+    fun setScoreText(player1Score: String?, player2Score: String?) {
         val msg = mScoreHandler.obtainMessage()
         val b = Bundle()
-        b.putString("player", playerScore)
-        b.putString("opponent", opponentScore)
+        b.putString("player1", player1Score)
+        b.putString("player2", player2Score)
         msg.data = b
         mScoreHandler.sendMessage(msg)
     }
+
 }
