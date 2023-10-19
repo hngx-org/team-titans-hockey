@@ -5,10 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.titans_hockey_challenge.R
 import com.example.titans_hockey_challenge.databinding.FragmentHockeyBinding
 import com.example.titans_hockey_challenge.models.HockeyTable
+import com.example.titans_hockey_challenge.models.SoundViewModel
 import com.example.titans_hockey_challenge.utils.GameThread
 
 class HockeyFragment : Fragment() {
@@ -17,10 +19,12 @@ class HockeyFragment : Fragment() {
 
     private var _binding: FragmentHockeyBinding? = null
     private val binding get() = _binding !!
+    private val soundViewModel: SoundViewModel by activityViewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         // Inflate the layout for this fragment
         _binding = FragmentHockeyBinding.inflate(inflater, container, false)
+        soundViewModel.setSoundOn(false)
         return binding.root
     }
 
@@ -54,5 +58,6 @@ class HockeyFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+        soundViewModel.setSoundOn(true)
     }
 }
