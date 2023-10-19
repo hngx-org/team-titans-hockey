@@ -1,13 +1,16 @@
-package com.example.titans_hockey_challenge.ui.hockeytable
+package com.example.titans_hockey_challenge.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.titans_hockey_challenge.R
 import com.example.titans_hockey_challenge.databinding.FragmentHockeyBinding
+import com.example.titans_hockey_challenge.models.HockeyTable
+import com.example.titans_hockey_challenge.models.SoundViewModel
 import com.example.titans_hockey_challenge.utils.GameThread
 
 class HockeyFragment : Fragment() {
@@ -16,17 +19,19 @@ class HockeyFragment : Fragment() {
 
     private var _binding: FragmentHockeyBinding? = null
     private val binding get() = _binding !!
+    private val soundViewModel: SoundViewModel by activityViewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         // Inflate the layout for this fragment
         _binding = FragmentHockeyBinding.inflate(inflater, container, false)
+        soundViewModel.setSoundOn(false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         hockeyTable = binding.hockeyTable
+
         hockeyTable.setScoreOpponent(binding.tvScoreOpponent)
         hockeyTable.setScorePlayer(binding.tvScorePlayer)
         hockeyTable.setStatus(binding.tvStatus)
@@ -42,7 +47,7 @@ class HockeyFragment : Fragment() {
             mGameThread?._resume()
             hockeyTable.resumeGame()
             hockeyTable.playStartGameSound()
-            binding.pauseOverlay.visibility = View.GONE
+            binding.pauseOverlay.visibility = View.INVISIBLE
         }
 
         binding.exitGame.setOnClickListener {
@@ -53,5 +58,6 @@ class HockeyFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+        soundViewModel.setSoundOn(true)
     }
 }
