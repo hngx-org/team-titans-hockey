@@ -4,13 +4,21 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import com.example.titans_hockey_challenge.utils.PUCK_SPEED
 
-class Puck(val radius: Float, private val paint: Paint) {
+class Puck(
+    val radius: Float,
+    private val paint: Paint,
+    private val innerPaint : Paint,
+) {
     var centerX = 0f
     var centerY = 0f
     var velocityX: Float = PUCK_SPEED
     var velocityY: Float = PUCK_SPEED
+
     fun draw(canvas: Canvas) {
         canvas.drawCircle(centerX, centerY, radius, paint)
+
+        val innerRadius = radius * 0.9f
+        canvas.drawCircle(centerX, centerY, innerRadius, innerPaint)
     }
 
     fun movePuck(canvas: Canvas) {

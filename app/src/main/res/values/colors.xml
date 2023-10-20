@@ -1,24 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="red">#FF0000</color>
     <color name="blue">#0000FF</color>
+    <color name="green">#AAFF00</color>
 
-    // player color
+    // player/player1 color
     <color name="player_color">#FF0000</color>
     <color name="player_middle_color">#8B0000</color>
     <color name="player_outer_color">#B40000</color>
 
-    // opponent color
+    // opponent/player2 color
     <color name="opponent_color">#0000FF</color>
     <color name="opponent_middle_color">#00008B</color>
     <color name="opponent_outer_color">#0000B4</color>
-
 
 
     // puck and table color
     <color name="puck_color">#FF000000</color>
     <color name="table_color">#FFFFFFFF</color>
 
+    // gray variations
+    <color name="dark_gray">#FF373A38</color>
+    <color name="semi_transparent_white">#80FFFFFF</color>
+    <color name="semi_transparent_light_gray">#80CCCCCC</color>
 </resources>
