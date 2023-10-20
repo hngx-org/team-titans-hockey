@@ -15,6 +15,7 @@ import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
 import com.example.titans_hockey_challenge.R
 import com.example.titans_hockey_challenge.utils.GameThread
 import com.example.titans_hockey_challenge.utils.PUCK_SPEED
@@ -233,6 +234,15 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
         val puck = puck!!
 
         val aiSpeed = 10f  // Adjust the AI speed based on your preference
+
+
+
+        // Retrieve the difficulty level from the ViewModel
+        val viewModel = ViewModelProvider(owner, ViewModelProvider.AndroidViewModelFactory.getInstance(this.context!!))
+            .get(LevelsDifficultyViewModel::class.java)
+        val difficultyLevel = viewModel.gameDifficulty.value ?: 10f // Default to medium difficulty
+
+
 
         // Check if the puck is on the AI's side of the table (approaching the black goal line)
         if (puck.centerX > mTableWidth / 2) {
