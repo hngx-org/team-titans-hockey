@@ -79,6 +79,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/semi_transparent_white"
+        android:orientation="vertical"
         android:gravity="center"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -88,52 +89,60 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0">
 
-        <LinearLayout
-            android:layout_width="300dp"
-            android:layout_height="200dp"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:background="@drawable/overlay_background"
-            android:padding="10dp">
+        <TextView
+            android:id="@+id/paused"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:fontFamily="@font/play_bold"
+            android:text="@string/paused"
+            android:textColor="@color/black"
+            android:textSize="38sp" />
 
-            <TextView
-                android:id="@+id/paused"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
-                android:fontFamily="@font/play_bold"
-                android:text="@string/paused"
-                android:textColor="@color/black"
-                android:textSize="38sp" />
+        <Button
+            android:id="@+id/resumeGame"
+            style="@style/Widget.AppCompat.Button"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/play_regular"
+            android:text="@string/resume_game"
+            android:padding="5dp"
+            android:layout_marginBottom="2dp"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:theme="@style/btnResumeGame" />
 
-            <Button
-                android:id="@+id/resumeGame"
-                style="@style/Widget.AppCompat.Button"
-                android:layout_width="150dp"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/play_regular"
-                android:text="@string/resume_game"
-                android:padding="5dp"
-                android:layout_marginBottom="2dp"
-                android:textColor="@color/white"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:theme="@style/btnResumeGame" />
+        <Button
+            android:id="@+id/pauseMusic"
+            style="@style/Widget.AppCompat.Button"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/play_regular"
+            android:text="@string/sound_text"
+            android:padding="5dp"
+            android:drawableEnd="@drawable/volume_max"
+            android:drawableTint="@color/white"
+            android:paddingStart="23dp"
+            android:paddingEnd="23dp"
+            android:layout_marginBottom="2dp"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:theme="@style/btnResumeGame" />
 
-            <Button
-                android:id="@+id/exitGame"
-                style="@style/Widget.AppCompat.Button"
-                android:layout_width="150dp"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/play_regular"
-                android:text="@string/exit_game"
-                android:padding="5dp"
-                android:textColor="@color/white"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:theme="@style/btnExitGame" />
-
-        </LinearLayout>
+        <Button
+            android:id="@+id/exitGame"
+            style="@style/Widget.AppCompat.Button"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/play_regular"
+            android:text="@string/exit_game"
+            android:padding="5dp"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:theme="@style/btnExitGame" />
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

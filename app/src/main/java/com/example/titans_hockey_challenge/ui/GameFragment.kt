@@ -53,7 +53,7 @@ class GameFragment : Fragment() {
             }
 
             btnMultiPlayer.setOnClickListener {
-                Toast.makeText(context, "Coming Soon!.....", Toast.LENGTH_SHORT).show()
+                findNavController().navigate(R.id.twoPlayerHockeyFragment2)
             }
 
             btnSettings.setOnClickListener {

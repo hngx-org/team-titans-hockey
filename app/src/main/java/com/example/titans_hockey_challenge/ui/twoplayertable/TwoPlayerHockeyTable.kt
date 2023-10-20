@@ -11,6 +11,7 @@ import android.os.Handler
 import android.os.Message
 import android.util.AttributeSet
 import android.view.MotionEvent
+import android.view.MotionEvent.INVALID_POINTER_ID
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.widget.TextView
@@ -47,8 +48,8 @@ class TwoPlayerHockeyTable : SurfaceView, SurfaceHolder.Callback {
     var mHolder: SurfaceHolder? = null
 //    private var mAiMoveProbability = 0f
 
-    private var player1Moving = false
-    private var player2Moving = false
+    private var activePointerIdPlayer1 = INVALID_POINTER_ID
+    private var activePointerIdPlayer2 = INVALID_POINTER_ID
 
     private var mLastPLayer1TouchX = 0f
     private var mLastPlayer1TouchY = 0f
@@ -249,16 +250,12 @@ class TwoPlayerHockeyTable : SurfaceView, SurfaceHolder.Callback {
                 playWallHitSound()
             } else if (checkCollisionWithLeftGoalPost()) {
                 twoPlayerGame!!.setState(STATE_LOSE)
-                playLosingSound()
                 return
             } else if (checkCollisionWithRightGoalPost()) {
                 twoPlayerGame!!.setState(STATE_WIN)
-                playWinningSound()
                 return
             }
-//            if (Random(System.currentTimeMillis()).nextFloat() < mAiMoveProbability) doAI()
             puck!!.movePuck(canvas!!)
-//            doAI()
         }
     }
 
@@ -296,8 +293,6 @@ class TwoPlayerHockeyTable : SurfaceView, SurfaceHolder.Callback {
         puck.velocityY *= factor.toFloat()
 
         // Move the puck out of the paddle to prevent sticking
-        // TODO IMPORTANT - Make sure and come back this code in case of any issue
-        //  arises with handling the collision.
         if (paddle === this.player1) {
             puck.centerX = player1!!.bounds.right + puck.radius
         } else if (paddle === player2) {
@@ -365,49 +360,66 @@ class TwoPlayerHockeyTable : SurfaceView, SurfaceHolder.Callback {
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         if (!twoPlayerGame!!.sensorsOn()) {
-            when (event.action and event.actionMasked) {
-                MotionEvent.ACTION_DOWN, MotionEvent.ACTION_POINTER_DOWN -> if (twoPlayerGame!!.isBetweenRounds) {
-                    twoPlayerGame!!.setState(STATE_RUNNING)
-                    playStartGameSound()
+            when (event.actionMasked) {
+                MotionEvent.ACTION_DOWN, MotionEvent.ACTION_POINTER_DOWN -> {
+                    if (twoPlayerGame!!.isBetweenRounds) {
+                        twoPlayerGame!!.setState(STATE_RUNNING)
+                        playStartGameSound()
+                    }
 
-                } else {
-                    // retrieving the pointerIndex for the two pointers(fingers) on the screen
-                    val pointerIndex = event.action and MotionEvent.ACTION_POINTER_INDEX_MASK shr MotionEvent.ACTION_POINTER_INDEX_SHIFT
+                    val pointerIndex = event.actionIndex
                     val x = event.getX(pointerIndex)
                     val y = event.getY(pointerIndex)
 
-                    // all we are doing is basically getting the initial position of both
-                    // pointers on the screen
                     if (x < mTableWidth / 2) {
-                        player1Moving = true
+                        // getting the first player's(pointer) first touch when they touch the screen
+                        activePointerIdPlayer1 = event.getPointerId(pointerIndex)
                         mLastPLayer1TouchX = x
                         mLastPlayer1TouchY = y
-                    } else {
-                        player2Moving = true
+                    }
+
+                    if (x > mTableWidth / 2) {
+                        // getting the second player's(pointer) first touch when they touch the screen
+                        activePointerIdPlayer2 = event.getPointerId(pointerIndex)
                         mLastPLayer2TouchX = x
                         mLastPlayer2TouchY = y
                     }
                 }
-                MotionEvent.ACTION_MOVE -> if (player1Moving) {
-                    val x = event.x
-                    val y = event.y
-                    val dx = x - mLastPLayer1TouchX
-                    val dy = y - mLastPlayer1TouchY
-                    mLastPLayer1TouchX = x
-                    mLastPlayer1TouchY = y
-                    movePaddleStriker1(dx, dy, player1)
-                } else if (player2Moving) {
-                    val x = event.x
-                    val y = event.y
-                    val dx = x - mLastPLayer2TouchX
-                    val dy = y - mLastPlayer2TouchY
-                    mLastPLayer2TouchX = x
-                    mLastPlayer2TouchY = y
-                    movePaddleStriker2(dx, dy, player2)
+                MotionEvent.ACTION_MOVE -> {
+                    val pointerCount = event.pointerCount
+                    for (i in 0 until pointerCount) {
+                        val pointerId = event.getPointerId(i)
+                        val x = event.getX(i)
+                        val y = event.getY(i)
+
+                        if (pointerId == activePointerIdPlayer1) {
+                            // Handles movement for player 1
+                            val dx = x - mLastPLayer1TouchX
+                            val dy = y - mLastPlayer1TouchY
+                            mLastPLayer1TouchX = x
+                            mLastPlayer1TouchY = y
+                            movePaddleStriker1(dx, dy, player1)
+                        }
+
+                        if (pointerId == activePointerIdPlayer2) {
+                            // Handles movement for player 2
+                            val dx = x - mLastPLayer2TouchX
+                            val dy = y - mLastPlayer2TouchY
+                            mLastPLayer2TouchX = x
+                            mLastPlayer2TouchY = y
+                            movePaddleStriker2(dx, dy, player2)
+                        }
+                    }
                 }
                 MotionEvent.ACTION_UP, MotionEvent.ACTION_POINTER_UP -> {
-                    player1Moving = false
-                    player2Moving = false
+                    val pointerIndex = event.actionIndex
+                    val pointerId = event.getPointerId(pointerIndex)
+
+                    if (pointerId == activePointerIdPlayer1) {
+                        activePointerIdPlayer1 = INVALID_POINTER_ID
+                    } else if (pointerId == activePointerIdPlayer2) {
+                        activePointerIdPlayer2 = INVALID_POINTER_ID
+                    }
                 }
             }
         } else {
@@ -422,22 +434,42 @@ class TwoPlayerHockeyTable : SurfaceView, SurfaceHolder.Callback {
         return true
     }
 
-//    private fun isTouchOnRacket(event: MotionEvent, mPaddle: Paddle?): Boolean {
-//        return mPaddle!!.bounds.contains(event.x, event.y)
-//    }
-
     private fun movePaddleStriker1(dx: Float, dy: Float, paddle: Paddle?) {
         synchronized(mHolder!!) {
+
             if (paddle === this.player1) {
-                movePaddle(paddle, paddle!!.bounds.left + dx, paddle.bounds.top + dy)
+                val newLeft = paddle!!.bounds.left + dx
+                val newTop = paddle.bounds.top + dy
+
+                // defines the boundary that basically disallows the paddle from crossing
+                // the center circle which is 130 units(from the left) from half of the table
+                val boundary = mTableWidth / 2 - 150f
+
+                // this will then only move the paddle if the position doesn't(lesser than or equals too) cross the
+                // boundary(130 units from the center)
+                if (newLeft + paddle.requestWidth <= boundary) {
+                    movePaddle(paddle, newLeft, newTop)
+                }
             }
         }
     }
 
     private fun movePaddleStriker2(dx: Float, dy: Float, paddle: Paddle?) {
         synchronized(mHolder!!) {
+
             if (paddle === this.player2) {
-                movePaddle(paddle, paddle!!.bounds.left + dx, paddle.bounds.top + dy)
+                val newLeft = paddle!!.bounds.left + dx
+                val newTop = paddle.bounds.top + dy
+
+                // defines the boundary that basically disallows the paddle from crossing
+                // the center circle which is -130 units(from the right) from half of the table
+                val boundary = mTableWidth / 2 + 150f  // Adjust the value as needed
+
+                // this will then only move the paddle if the position doesn't(greater then or equals too) cross the
+                // boundary(-130 units from the center) so its coming from the right
+                if (newLeft >= boundary) {
+                    movePaddle(paddle, newLeft, newTop)
+                }
             }
         }
     }

@@ -229,31 +229,231 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
     }
 
     private fun doAI() {
+
         val aiPaddle = mOpponent!!
         val puck = puck!!
-
-        val aiSpeed = 10f  // Adjust the AI speed based on your preference
+        // this adjusts the ai speed
+        val aiSpeed = 5f
+        val initialY = mTableHeight / 2 - aiPaddle.requestHeight / 2
+        val initialX = mTableWidth - aiPaddle.requestWidth - 2
+        // distance -200 from the center of the table, which is the right
+        val boundary = mTableWidth / 2 - 150f
 
         // Check if the puck is on the AI's side of the table (approaching the black goal line)
         if (puck.centerX > mTableWidth / 2) {
-            // Calculate the desired AI paddle position
+            // Calculate the desired AI paddle position based on the puck's position
             val desiredY = puck.centerY - aiPaddle.requestHeight / 2
+            val desiredX = puck.centerX - aiPaddle.requestWidth / 2
 
             // Ensure that the AI paddle stays on its side of the table
-            if (desiredY < 0) {
-                // AI paddle is at the top boundary
-                movePaddle(aiPaddle, aiPaddle.bounds.left, 0f)
-            } else if (desiredY + aiPaddle.requestHeight > mTableHeight) {
-                // AI paddle is at the bottom boundary
-                movePaddle(aiPaddle, aiPaddle.bounds.left, (mTableHeight - aiPaddle.requestHeight).toFloat())
+            val maxMoveDistance = aiSpeed
+            val deltaY = desiredY - aiPaddle.bounds.top
+            val deltaX = desiredX - aiPaddle.bounds.left
+
+            if (deltaY > maxMoveDistance) {
+                // AI paddle is below the desired position, move it closer
+                val newTop = aiPaddle.bounds.top + maxMoveDistance
+                movePaddle(aiPaddle, aiPaddle.bounds.left, newTop)
+            } else if (deltaY < -maxMoveDistance) {
+                // AI paddle is above the desired position, move it closer
+                val newTop = aiPaddle.bounds.top - maxMoveDistance
+                movePaddle(aiPaddle, aiPaddle.bounds.left, newTop)
             } else {
-                // Move the AI paddle smoothly towards the desired position with a controlled speed
-                val deltaY = desiredY - aiPaddle.bounds.top
-                val moveDistance = aiSpeed.coerceAtMost(Math.abs(deltaY))
-                val newTop = aiPaddle.bounds.top + if (deltaY > 0) moveDistance else -moveDistance
+                // The AI is close to the desired vertical position, let it move at max speed
+                val newTop = aiPaddle.bounds.top + deltaY
                 movePaddle(aiPaddle, aiPaddle.bounds.left, newTop)
             }
+
+            if (deltaX > maxMoveDistance) {
+                // AI paddle is to the right of the desired position, move it closer
+                val newLeft = aiPaddle.bounds.left + maxMoveDistance
+                movePaddle(aiPaddle, newLeft, aiPaddle.bounds.top)
+            } else if (deltaX < -maxMoveDistance) {
+                // AI paddle is to the left of the desired position, move it closer
+                val newLeft = aiPaddle.bounds.left - maxMoveDistance
+                movePaddle(aiPaddle, newLeft, aiPaddle.bounds.top)
+            } else {
+                // The AI is close to the desired horizontal position, let it move at max speed
+                val newLeft = aiPaddle.bounds.left + deltaX
+                movePaddle(aiPaddle, newLeft, aiPaddle.bounds.top)
+            }
+
+            // Check if the AI paddle is beyond the boundary and move it back
+            if (aiPaddle.bounds.left < boundary) {
+                movePaddle(aiPaddle, boundary, aiPaddle.bounds.top)
+            }
+        } else {
+            // Puck is on the opposite side, move the AI paddle back to its initial position
+            val deltaY = initialY - aiPaddle.bounds.top
+            val deltaX = initialX - aiPaddle.bounds.left
+            val maxMoveDistance = aiSpeed
+
+            if (deltaY > maxMoveDistance) {
+                // AI paddle is far from the initial vertical position, move it closer
+                val newTop = aiPaddle.bounds.top + maxMoveDistance
+                movePaddle(aiPaddle, aiPaddle.bounds.left, newTop)
+            } else if (deltaY < -maxMoveDistance) {
+                // AI paddle is far above the initial vertical position, move it closer
+                val newTop = aiPaddle.bounds.top - maxMoveDistance
+                movePaddle(aiPaddle, aiPaddle.bounds.left, newTop)
+            } else {
+                // The AI is close to its initial vertical position, let it move at max speed
+                val newTop = aiPaddle.bounds.top + deltaY
+                movePaddle(aiPaddle, aiPaddle.bounds.left, newTop)
+            }
+
+            if (deltaX > maxMoveDistance) {
+                // AI paddle is to the right of the initial horizontal position, move it closer
+                val newLeft = aiPaddle.bounds.left + maxMoveDistance
+                movePaddle(aiPaddle, newLeft, aiPaddle.bounds.top)
+            } else if (deltaX < -maxMoveDistance) {
+                // AI paddle is to the left of the initial horizontal position, move it closer
+                val newLeft = aiPaddle.bounds.left - maxMoveDistance
+                movePaddle(aiPaddle, newLeft, aiPaddle.bounds.top)
+            } else {
+                // The AI is close to its initial horizontal position, let it move at max speed
+                val newLeft = aiPaddle.bounds.left + deltaX
+                movePaddle(aiPaddle, newLeft, aiPaddle.bounds.top)
+            }
         }
+
+//        val aiPaddle = mOpponent!!
+//        val puck = puck!!
+//
+//        val aiSpeed = 10f  // Adjust the AI speed based on your preference
+//        val initialY = mTableHeight / 2 - aiPaddle.requestHeight / 2  // Initial AI paddle Y position
+//        val boundary = mTableWidth / 2 - 130f  // Distance from the center boundary
+//
+//// Calculate the desired AI paddle position based on the puck's position
+//        val desiredY = puck.centerY - aiPaddle.requestHeight / 2
+//        val desiredX = puck.centerX - aiPaddle.requestWidth / 2
+//
+//// Ensure that the AI paddle stays on its side of the table
+//        val maxMoveDistance = aiSpeed
+//        val deltaY = desiredY - aiPaddle.bounds.top
+//        val deltaX = desiredX - aiPaddle.bounds.left
+//
+//        if (deltaY > maxMoveDistance) {
+//            // AI paddle is below the desired position, move it closer
+//            val newTop = aiPaddle.bounds.top + maxMoveDistance
+//            movePaddle(aiPaddle, aiPaddle.bounds.left, newTop)
+//        } else if (deltaY < -maxMoveDistance) {
+//            // AI paddle is above the desired position, move it closer
+//            val newTop = aiPaddle.bounds.top - maxMoveDistance
+//            movePaddle(aiPaddle, aiPaddle.bounds.left, newTop)
+//        } else {
+//            // The AI is close to the desired vertical position, let it move at max speed
+//            val newTop = aiPaddle.bounds.top + deltaY
+//            movePaddle(aiPaddle, aiPaddle.bounds.left, newTop)
+//        }
+//
+//        if (deltaX > maxMoveDistance) {
+//            // AI paddle is to the right of the desired position, move it closer
+//            val newLeft = aiPaddle.bounds.left + maxMoveDistance
+//            movePaddle(aiPaddle, newLeft, aiPaddle.bounds.top)
+//        } else if (deltaX < -maxMoveDistance) {
+//            // AI paddle is to the left of the desired position, move it closer
+//            val newLeft = aiPaddle.bounds.left - maxMoveDistance
+//            movePaddle(aiPaddle, newLeft, aiPaddle.bounds.top)
+//        } else {
+//            // The AI is close to the desired horizontal position, let it move at max speed
+//            val newLeft = aiPaddle.bounds.left + deltaX
+//            movePaddle(aiPaddle, newLeft, aiPaddle.bounds.top)
+//        }
+//
+//// Check if the AI paddle is beyond the boundary and move it back
+//        if (aiPaddle.bounds.left < boundary) {
+//            movePaddle(aiPaddle, boundary, aiPaddle.bounds.top)
+//        }
+
+//        val aiPaddle = mOpponent!!
+//        val puck = puck!!
+//
+//        val aiSpeed = 10f  // Adjust the AI speed based on your preference
+//        val initialY = mTableHeight / 2 - aiPaddle.requestHeight / 2  // Initial AI paddle Y position
+//
+//// Calculate the desired AI paddle position based on the puck's position
+//        val desiredY = puck.centerY - aiPaddle.requestHeight / 2
+//        val desiredX = puck.centerX - aiPaddle.requestWidth / 2
+//
+//// Ensure that the AI paddle stays on its side of the table
+//        val maxMoveDistance = aiSpeed
+//        val deltaY = desiredY - aiPaddle.bounds.top
+//        val deltaX = desiredX - aiPaddle.bounds.left
+//
+//        if (deltaY > maxMoveDistance) {
+//            // AI paddle is below the desired position, move it closer
+//            val newTop = aiPaddle.bounds.top + maxMoveDistance
+//            movePaddle(aiPaddle, aiPaddle.bounds.left, newTop)
+//        } else if (deltaY < -maxMoveDistance) {
+//            // AI paddle is above the desired position, move it closer
+//            val newTop = aiPaddle.bounds.top - maxMoveDistance
+//            movePaddle(aiPaddle, aiPaddle.bounds.left, newTop)
+//        } else {
+//            // The AI is close to the desired vertical position, let it move at max speed
+//            val newTop = aiPaddle.bounds.top + deltaY
+//            movePaddle(aiPaddle, aiPaddle.bounds.left, newTop)
+//        }
+//
+//        if (deltaX > maxMoveDistance) {
+//            // AI paddle is to the right of the desired position, move it closer
+//            val newLeft = aiPaddle.bounds.left + maxMoveDistance
+//            movePaddle(aiPaddle, newLeft, aiPaddle.bounds.top)
+//        } else if (deltaX < -maxMoveDistance) {
+//            // AI paddle is to the left of the desired position, move it closer
+//            val newLeft = aiPaddle.bounds.left - maxMoveDistance
+//            movePaddle(aiPaddle, newLeft, aiPaddle.bounds.top)
+//        } else {
+//            // The AI is close to the desired horizontal position, let it move at max speed
+//            val newLeft = aiPaddle.bounds.left + deltaX
+//            movePaddle(aiPaddle, newLeft, aiPaddle.bounds.top)
+//        }
+
+//        val aiPaddle = mOpponent!!
+//        val puck = puck!!
+//
+//        val aiSpeed = 10f  // Adjust the AI speed based on your preference
+//        val initialY = mTableHeight / 2 - aiPaddle.requestHeight / 2  // Initial AI paddle Y position
+//
+//// Calculate the desired AI paddle position based on puck's position
+//        val desiredY = puck.centerY - aiPaddle.requestHeight / 2
+//        val desiredX = puck.centerX - aiPaddle.requestWidth / 2
+//
+//// Ensure that the AI paddle stays on its side of the table
+//        val maxMoveDistance = aiSpeed
+//        val deltaY = desiredY - aiPaddle.bounds.top
+//        val deltaX = desiredX - aiPaddle.bounds.left
+//
+//        if (deltaY > maxMoveDistance) {
+//            // AI paddle is below the desired position, move it closer
+//            val newTop = aiPaddle.bounds.top + maxMoveDistance
+//            movePaddle(aiPaddle, aiPaddle.bounds.left, newTop)
+//        } else if (deltaY < -maxMoveDistance) {
+//            // AI paddle is above the desired position, move it closer
+//            val newTop = aiPaddle.bounds.top - maxMoveDistance
+//            movePaddle(aiPaddle, aiPaddle.bounds.left, newTop)
+//        } else {
+//            // The AI is close to the desired vertical position, let it move at max speed
+//            val newTop = aiPaddle.bounds.top + deltaY
+//            movePaddle(aiPaddle, aiPaddle.bounds.left, newTop)
+//        }
+//
+//        if (deltaX > maxMoveDistance) {
+//            // AI paddle is to the right of the desired position, move it closer
+//            val newLeft = aiPaddle.bounds.left + maxMoveDistance
+//            movePaddle(aiPaddle, newLeft, aiPaddle.bounds.top)
+//        } else if (deltaX < -maxMoveDistance) {
+//            // AI paddle is to the left of the desired position, move it closer
+//            val newLeft = aiPaddle.bounds.left - maxMoveDistance
+//            movePaddle(aiPaddle, newLeft, aiPaddle.bounds.top)
+//        } else {
+//            // The AI is close to the desired horizontal position, let it move at max speed
+//            val newLeft = aiPaddle.bounds.left + deltaX
+//            movePaddle(aiPaddle, newLeft, aiPaddle.bounds.top)
+//        }
+
+
+
     }
 
 
@@ -429,8 +629,19 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
     private fun movePaddleStriker(dx: Float, dy: Float, paddle: Paddle?) {
         synchronized(mHolder!!) {
             if (paddle === this.paddle) {
-                movePaddle(paddle, paddle!!.bounds.left + dx, paddle.bounds.top + dy)
-            } else if (paddle === mOpponent) {
+                val newLeft = paddle!!.bounds.left + dx
+                val newTop = paddle.bounds.top + dy
+
+                // defines the boundary that basically disallows the paddle from crossing
+                // the center circle which is 130 units from half of the table
+                val boundary = mTableWidth / 2 - 130f
+
+                // this will then only move the paddle if the position doesn't(lesser then or equals too) cross the
+                // boundary(130 units from the center)
+                if (newLeft + paddle.requestWidth <= boundary) {
+                    movePaddle(paddle, newLeft, newTop)
+                }
+            } else if (paddle === mOpponent)  {
                 movePaddle(paddle, paddle!!.bounds.left, paddle.bounds.top + dy)
             }
         }

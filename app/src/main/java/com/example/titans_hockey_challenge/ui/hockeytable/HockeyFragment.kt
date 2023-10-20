@@ -1,4 +1,4 @@
-package com.example.titans_hockey_challenge.ui
+package com.example.titans_hockey_challenge.ui.hockeytable
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,7 +9,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.titans_hockey_challenge.R
 import com.example.titans_hockey_challenge.databinding.FragmentHockeyBinding
-import com.example.titans_hockey_challenge.models.HockeyTable
 import com.example.titans_hockey_challenge.models.SoundViewModel
 import com.example.titans_hockey_challenge.utils.GameThread
 

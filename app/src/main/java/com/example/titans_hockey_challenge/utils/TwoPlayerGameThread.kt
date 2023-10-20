@@ -76,13 +76,13 @@ class TwoPlayerGameThread(
                 STATE_READY -> setUpNewRound()
                 STATE_RUNNING -> hideStatusText()
                 STATE_WIN -> {
-                    setStatusText(res.getString(R.string.mode_win))
+                    setStatusText("Player 1 wins!")
                     mTwoPlayerHockeyTable.player1!!.score++
                     mTwoPlayerHockeyTable.setTableBoundsColor(ContextCompat.getColor(mCtx, R.color.player_color))
                     setUpNewRound()
                 }
                 STATE_LOSE -> {
-                    setStatusText(res.getString(R.string.mode_loss))
+                    setStatusText("Player 2 wins!")
                     mTwoPlayerHockeyTable.player2!!.score++
                     mTwoPlayerHockeyTable.setTableBoundsColor(ContextCompat.getColor(mCtx, R.color.opponent_color))
                     setUpNewRound()
