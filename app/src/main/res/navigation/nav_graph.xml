@@ -16,12 +16,15 @@
         <action
             android:id="@+id/action_gameFragment_to_blankFragment"
             app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/action_gameFragment_to_twoPlayerHockeyFragment2"
+            app:destination="@id/twoPlayerHockeyFragment2" />
 
 
     </fragment>
     <fragment
         android:id="@+id/hockeyFragment"
-        android:name="com.example.titans_hockey_challenge.ui.HockeyFragment"
+        android:name="com.example.titans_hockey_challenge.ui.hockeytable.HockeyFragment"
         android:label="fragment_hockey"
         tools:layout="@layout/fragment_hockey" >
         <action
@@ -59,6 +62,10 @@
         android:name="com.example.titans_hockey_challenge.ui.StartFragment"
         android:label="fragment_start"
         tools:layout="@layout/fragment_start" />
+    <fragment
+        android:id="@+id/twoPlayerHockeyFragment2"
+        android:name="com.example.titans_hockey_challenge.ui.twoplayertable.TwoPlayerHockeyFragment"
+        android:label="TwoPlayerHockeyFragment" />
 
 
 </navigation>

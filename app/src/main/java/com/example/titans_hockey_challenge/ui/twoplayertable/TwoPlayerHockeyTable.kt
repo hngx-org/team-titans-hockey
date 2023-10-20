@@ -1,4 +1,4 @@
-package com.example.titans_hockey_challenge.models
+package com.example.titans_hockey_challenge.ui.twoplayertable
 
 import android.content.Context
 import android.graphics.Canvas
@@ -11,32 +11,33 @@ import android.os.Handler
 import android.os.Message
 import android.util.AttributeSet
 import android.view.MotionEvent
+import android.view.MotionEvent.INVALID_POINTER_ID
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.example.titans_hockey_challenge.R
-import com.example.titans_hockey_challenge.utils.GameThread
+import com.example.titans_hockey_challenge.models.Paddle
+import com.example.titans_hockey_challenge.models.Puck
 import com.example.titans_hockey_challenge.utils.PUCK_SPEED
-import com.example.titans_hockey_challenge.utils.RACQUET_SPEED
 import com.example.titans_hockey_challenge.utils.STATE_LOSE
-import com.example.titans_hockey_challenge.utils.STATE_PAUSED
 import com.example.titans_hockey_challenge.utils.STATE_RUNNING
 import com.example.titans_hockey_challenge.utils.STATE_WIN
-import java.util.Random
+import com.example.titans_hockey_challenge.utils.TwoPlayerGameThread
 import kotlin.math.abs
 
+class TwoPlayerHockeyTable : SurfaceView, SurfaceHolder.Callback {
 
-class HockeyTable : SurfaceView, SurfaceHolder.Callback {
-    var game: GameThread? = null
+    var twoPlayerGame: TwoPlayerGameThread? = null
         private set
     private var mStatus: TextView? = null
-    private var mScorePlayer: TextView? = null
-    private var mScoreOpponent: TextView? = null
-    var paddle: Paddle? = null
+    private var mScorePlayer1 : TextView? = null
+    private var mScorePlayer2 : TextView? = null
+    var player1 : Paddle? = null
         private set
-    private var mOpponent: Paddle? = null
-    var puck: Puck? = null
+    var player2 : Paddle? = null
+        private set
+    private var puck: Puck? = null
         private set
     private var mNetPaint: Paint? = null
     private var mGoalPostBoundsPaint: Paint? = null
@@ -45,10 +46,15 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
     private var mTableHeight = 0
     private var mContext: Context? = null
     var mHolder: SurfaceHolder? = null
-    private var mAiMoveProbability = 0f
-    private var moving = false
-    private var mLastTouchY = 0f
-    private var mLastTouchX = 0f
+//    private var mAiMoveProbability = 0f
+
+    private var activePointerIdPlayer1 = INVALID_POINTER_ID
+    private var activePointerIdPlayer2 = INVALID_POINTER_ID
+
+    private var mLastPLayer1TouchX = 0f
+    private var mLastPlayer1TouchY = 0f
+    private var mLastPLayer2TouchX = 0f
+    private var mLastPlayer2TouchY = 0f
 
     private var mediaPlayer: MediaPlayer? = null
     private var puckHitSound: MediaPlayer? = null
@@ -58,11 +64,11 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
     private var goalPostHitSound: MediaPlayer? = null
 
 
-    fun initHockeyTable(ctx: Context, attr: AttributeSet?) {
+    private fun initTwoPlayerHockeyTable(ctx: Context, attr: AttributeSet?) {
         mContext = ctx
         mHolder = holder
         mHolder!!.addCallback(this)
-        game = GameThread(this.context, mHolder!!, this, object : Handler() {
+        twoPlayerGame = TwoPlayerGameThread(this.context, mHolder!!, this, object : Handler() {
             override fun handleMessage(msg: Message) {
                 super.handleMessage(msg)
                 mStatus!!.visibility = msg.data.getInt("visibility")
@@ -71,8 +77,8 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
         }, object : Handler() {
             override fun handleMessage(msg: Message) {
                 super.handleMessage(msg)
-                mScorePlayer!!.text = msg.data.getString("player")
-                mScoreOpponent!!.text = msg.data.getString("opponent")
+                mScorePlayer1!!.text = msg.data.getString("player1")
+                mScorePlayer2!!.text = msg.data.getString("player2")
             }
         })
 
@@ -82,34 +88,34 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
         val puckRadius = a.getInteger(R.styleable.HockeyTable_puckRadius, 40)
 
         // Set Player
-        val playerPaint = Paint()
-        playerPaint.isAntiAlias = true
-        playerPaint.color = ContextCompat.getColor(mContext!!, R.color.player_color)
+        val player1Paint = Paint()
+        player1Paint.isAntiAlias = true
+        player1Paint.color = ContextCompat.getColor(mContext!!, R.color.player_color)
 
-        val playerMiddlePaint = Paint()
-        playerMiddlePaint.isAntiAlias = true
-        playerMiddlePaint.style = Paint.Style.FILL
-        playerMiddlePaint.color = ContextCompat.getColor(mContext!!, R.color.player_middle_color)
+        val player1MiddlePaint = Paint()
+        player1MiddlePaint.isAntiAlias = true
+        player1MiddlePaint.style = Paint.Style.FILL
+        player1MiddlePaint.color = ContextCompat.getColor(mContext!!, R.color.player_middle_color)
 
-        val playerOuterPaint = Paint()
-        playerOuterPaint.style = Paint.Style.FILL
-        playerOuterPaint.color = ContextCompat.getColor(mContext!!, R.color.player_outer_color)
-        paddle = Paddle(strikerWidth, strikerHeight, paint = playerPaint, middlePaint = playerMiddlePaint, outerPaint = playerOuterPaint)
+        val player1OuterPaint = Paint()
+        player1OuterPaint.style = Paint.Style.FILL
+        player1OuterPaint.color = ContextCompat.getColor(mContext!!, R.color.player_outer_color)
+        player1 = Paddle(strikerWidth, strikerHeight, paint = player1Paint, middlePaint = player1MiddlePaint, outerPaint = player1OuterPaint)
 
         // Set Opponent
-        val opponentPaint = Paint()
-        opponentPaint.isAntiAlias = true
-        opponentPaint.color = ContextCompat.getColor(mContext!!, R.color.opponent_color)
+        val player2Paint = Paint()
+        player2Paint.isAntiAlias = true
+        player2Paint.color = ContextCompat.getColor(mContext!!, R.color.opponent_color)
 
-        val opponentMiddlePaint = Paint()
-        opponentMiddlePaint.isAntiAlias = true
-        opponentMiddlePaint.style = Paint.Style.FILL
-        opponentMiddlePaint.color = ContextCompat.getColor(mContext!!, R.color.opponent_middle_color)
+        val player2MiddlePaint = Paint()
+        player2MiddlePaint.isAntiAlias = true
+        player2MiddlePaint.style = Paint.Style.FILL
+        player2MiddlePaint.color = ContextCompat.getColor(mContext!!, R.color.opponent_middle_color)
 
-        val opponentOuterPaint = Paint()
-        opponentOuterPaint.style = Paint.Style.FILL
-        opponentOuterPaint.color = ContextCompat.getColor(mContext!!, R.color.opponent_outer_color)
-        mOpponent = Paddle(strikerWidth, strikerHeight, paint = opponentPaint, middlePaint = opponentMiddlePaint, outerPaint = opponentOuterPaint)
+        val player2OuterPaint = Paint()
+        player2OuterPaint.style = Paint.Style.FILL
+        player2OuterPaint.color = ContextCompat.getColor(mContext!!, R.color.opponent_outer_color)
+        player2 = Paddle(strikerWidth, strikerHeight, paint = player2Paint, middlePaint = player2MiddlePaint, outerPaint = player2OuterPaint)
 
         // Set Puck
         val puckPaint = Paint()
@@ -132,7 +138,7 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
         mTableBoundsPaint!!.isAntiAlias = true
         mTableBoundsPaint!!.style = Paint.Style.STROKE
         mTableBoundsPaint!!.strokeWidth = 35f
-        mAiMoveProbability = 0.8f
+//        mAiMoveProbability = 0.8f
 
         // Draw Goal post
         mGoalPostBoundsPaint = Paint()
@@ -144,7 +150,7 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
 
     override fun draw(canvas: Canvas) {
         super.draw(canvas)
-        if (!game!!.isPaused) {
+        if (!twoPlayerGame!!.isPaused) {
             canvas.drawColor(ContextCompat.getColor(mContext!!, R.color.table_color))
 
             // Draw Hockey board with rounded corners
@@ -183,44 +189,44 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
             canvas.drawLine(rightGoalPostX, goalPostY1, rightGoalPostX, goalPostY2, mGoalPostBoundsPaint!!)
             canvas.drawCircle(rightGoalPostX, centerY, radius, mNetPaint!!)
 
-            game!!.setScoreText(
-                paddle!!.score.toString(), mOpponent!!.score.toString()
+            twoPlayerGame!!.setScoreText(
+                player1!!.score.toString(), player2!!.score.toString()
             )
-            paddle!!.drawCircle(canvas)
-            mOpponent!!.drawCircle(canvas)
+            player1!!.drawCircle(canvas)
+            player2!!.drawCircle(canvas)
             puck!!.draw(canvas)
         }
     }
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
-        initHockeyTable(context, attrs)
+        initTwoPlayerHockeyTable(context, attrs)
     }
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-        initHockeyTable(context, attrs)
+        initTwoPlayerHockeyTable(context, attrs)
     }
 
     override fun surfaceCreated(surfaceHolder: SurfaceHolder) {
-        game!!.setRunning(true)
-        game!!.start()
+        twoPlayerGame!!.setRunning(true)
+        twoPlayerGame!!.start()
     }
 
     override fun surfaceChanged(surfaceHolder: SurfaceHolder, format: Int, width: Int, height: Int) {
         mTableWidth = width
         mTableHeight = height
-        game!!.setUpNewRound()
+        twoPlayerGame!!.setUpNewRound()
     }
 
     override fun surfaceDestroyed(surfaceHolder: SurfaceHolder) {
         var retry = true
-        game!!.setRunning(false)
+        twoPlayerGame!!.setRunning(false)
 
         pauseBackgroundSound()
         releaseSounds()
 
         while (retry) {
             try {
-                game!!.join()
+                twoPlayerGame!!.join()
                 retry = false
             } catch (e: InterruptedException) {
                 e.printStackTrace()
@@ -228,41 +234,12 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
         }
     }
 
-    private fun doAI() {
-        val aiPaddle = mOpponent!!
-        val puck = puck!!
-
-        val aiSpeed = 10f  // Adjust the AI speed based on your preference
-
-        // Check if the puck is on the AI's side of the table (approaching the black goal line)
-        if (puck.centerX > mTableWidth / 2) {
-            // Calculate the desired AI paddle position
-            val desiredY = puck.centerY - aiPaddle.requestHeight / 2
-
-            // Ensure that the AI paddle stays on its side of the table
-            if (desiredY < 0) {
-                // AI paddle is at the top boundary
-                movePaddle(aiPaddle, aiPaddle.bounds.left, 0f)
-            } else if (desiredY + aiPaddle.requestHeight > mTableHeight) {
-                // AI paddle is at the bottom boundary
-                movePaddle(aiPaddle, aiPaddle.bounds.left, (mTableHeight - aiPaddle.requestHeight).toFloat())
-            } else {
-                // Move the AI paddle smoothly towards the desired position with a controlled speed
-                val deltaY = desiredY - aiPaddle.bounds.top
-                val moveDistance = aiSpeed.coerceAtMost(Math.abs(deltaY))
-                val newTop = aiPaddle.bounds.top + if (deltaY > 0) moveDistance else -moveDistance
-                movePaddle(aiPaddle, aiPaddle.bounds.left, newTop)
-            }
-        }
-    }
-
-
     fun update(canvas: Canvas?) {
-        if (!game!!.isPaused) {
-            if (checkCollisionPaddle(paddle, puck)) {
-                handleCollision(paddle, puck)
-            } else if (checkCollisionPaddle(mOpponent, puck)) {
-                handleCollision(mOpponent, puck)
+        if (!twoPlayerGame!!.isPaused) {
+            if (checkCollisionPaddle(player1, puck)) {
+                handleCollision(player1, puck)
+            } else if (checkCollisionPaddle(player2, puck)) {
+                handleCollision(player2, puck)
             } else if (checkCollisionWithTopOrBottomWall()) {
                 // resets the puck's Y velocity
                 puck!!.velocityY = -puck!!.velocityY
@@ -272,17 +249,13 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
                 puck!!.velocityX = -puck!!.velocityX
                 playWallHitSound()
             } else if (checkCollisionWithLeftGoalPost()) {
-                game!!.setState(STATE_LOSE)
-                playLosingSound()
+                twoPlayerGame!!.setState(STATE_LOSE)
                 return
             } else if (checkCollisionWithRightGoalPost()) {
-                game!!.setState(STATE_WIN)
-                playWinningSound()
+                twoPlayerGame!!.setState(STATE_WIN)
                 return
             }
-            if (Random(System.currentTimeMillis()).nextFloat() < mAiMoveProbability) doAI()
             puck!!.movePuck(canvas!!)
-            doAI()
         }
     }
 
@@ -309,7 +282,7 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
     }
 
     private fun handleCollision(paddle: Paddle?, puck: Puck?) {
-        // Reverses the X velocity which sorts of bounces it back
+        // Reverses the X velocity
         puck!!.velocityX = -puck.velocityX
 
         // Adjust the Y velocity to maintain a constant speed
@@ -320,10 +293,10 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
         puck.velocityY *= factor.toFloat()
 
         // Move the puck out of the paddle to prevent sticking
-        if (paddle === this.paddle) {
-            puck.centerX = paddle!!.bounds.right + puck.radius
-        } else if (paddle === mOpponent) {
-            puck.centerX = mOpponent!!.bounds.left - puck.radius
+        if (paddle === this.player1) {
+            puck.centerX = player1!!.bounds.right + puck.radius
+        } else if (paddle === player2) {
+            puck.centerX = player2!!.bounds.left - puck.radius
         }
 
         playPuckHitSound()
@@ -386,34 +359,73 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        if (!game!!.sensorsOn()) {
-            when (event.action) {
-                MotionEvent.ACTION_DOWN -> if (game!!.isBetweenRounds) {
-                    game!!.setState(STATE_RUNNING)
+        if (!twoPlayerGame!!.sensorsOn()) {
+            when (event.actionMasked) {
+                MotionEvent.ACTION_DOWN, MotionEvent.ACTION_POINTER_DOWN -> {
+                    if (twoPlayerGame!!.isBetweenRounds) {
+                        twoPlayerGame!!.setState(STATE_RUNNING)
+                        playStartGameSound()
+                    }
 
-                    playStartGameSound()
-                } else {
-                    if (isTouchOnRacket(event, paddle)) {
-                        moving = true
-                        mLastTouchX = event.x
-                        mLastTouchY = event.y
+                    val pointerIndex = event.actionIndex
+                    val x = event.getX(pointerIndex)
+                    val y = event.getY(pointerIndex)
+
+                    if (x < mTableWidth / 2) {
+                        // getting the first player's(pointer) first touch when they touch the screen
+                        activePointerIdPlayer1 = event.getPointerId(pointerIndex)
+                        mLastPLayer1TouchX = x
+                        mLastPlayer1TouchY = y
+                    }
+
+                    if (x > mTableWidth / 2) {
+                        // getting the second player's(pointer) first touch when they touch the screen
+                        activePointerIdPlayer2 = event.getPointerId(pointerIndex)
+                        mLastPLayer2TouchX = x
+                        mLastPlayer2TouchY = y
                     }
                 }
-                MotionEvent.ACTION_MOVE -> if (moving) {
-                    val x = event.x
-                    val y = event.y
-                    val dx = x - mLastTouchX
-                    val dy = y - mLastTouchY
-                    mLastTouchX = x
-                    mLastTouchY = y
-                    movePaddleStriker(dx, dy, paddle)
+                MotionEvent.ACTION_MOVE -> {
+                    val pointerCount = event.pointerCount
+                    for (i in 0 until pointerCount) {
+                        val pointerId = event.getPointerId(i)
+                        val x = event.getX(i)
+                        val y = event.getY(i)
+
+                        if (pointerId == activePointerIdPlayer1) {
+                            // Handles movement for player 1
+                            val dx = x - mLastPLayer1TouchX
+                            val dy = y - mLastPlayer1TouchY
+                            mLastPLayer1TouchX = x
+                            mLastPlayer1TouchY = y
+                            movePaddleStriker1(dx, dy, player1)
+                        }
+
+                        if (pointerId == activePointerIdPlayer2) {
+                            // Handles movement for player 2
+                            val dx = x - mLastPLayer2TouchX
+                            val dy = y - mLastPlayer2TouchY
+                            mLastPLayer2TouchX = x
+                            mLastPlayer2TouchY = y
+                            movePaddleStriker2(dx, dy, player2)
+                        }
+                    }
                 }
-                MotionEvent.ACTION_UP -> moving = false
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_POINTER_UP -> {
+                    val pointerIndex = event.actionIndex
+                    val pointerId = event.getPointerId(pointerIndex)
+
+                    if (pointerId == activePointerIdPlayer1) {
+                        activePointerIdPlayer1 = INVALID_POINTER_ID
+                    } else if (pointerId == activePointerIdPlayer2) {
+                        activePointerIdPlayer2 = INVALID_POINTER_ID
+                    }
+                }
             }
         } else {
             if (event.action == MotionEvent.ACTION_DOWN) {
-                if (game!!.isBetweenRounds) {
-                    game!!.setState(STATE_RUNNING)
+                if (twoPlayerGame!!.isBetweenRounds) {
+                    twoPlayerGame!!.setState(STATE_RUNNING)
                     playStartGameSound()
                 }
             }
@@ -422,16 +434,42 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
         return true
     }
 
-    private fun isTouchOnRacket(event: MotionEvent, mPaddle: Paddle?): Boolean {
-        return mPaddle!!.bounds.contains(event.x, event.y)
+    private fun movePaddleStriker1(dx: Float, dy: Float, paddle: Paddle?) {
+        synchronized(mHolder!!) {
+
+            if (paddle === this.player1) {
+                val newLeft = paddle!!.bounds.left + dx
+                val newTop = paddle.bounds.top + dy
+
+                // defines the boundary that basically disallows the paddle from crossing
+                // the center circle which is 130 units(from the left) from half of the table
+                val boundary = mTableWidth / 2 - 150f
+
+                // this will then only move the paddle if the position doesn't(lesser than or equals too) cross the
+                // boundary(130 units from the center)
+                if (newLeft + paddle.requestWidth <= boundary) {
+                    movePaddle(paddle, newLeft, newTop)
+                }
+            }
+        }
     }
 
-    private fun movePaddleStriker(dx: Float, dy: Float, paddle: Paddle?) {
+    private fun movePaddleStriker2(dx: Float, dy: Float, paddle: Paddle?) {
         synchronized(mHolder!!) {
-            if (paddle === this.paddle) {
-                movePaddle(paddle, paddle!!.bounds.left + dx, paddle.bounds.top + dy)
-            } else if (paddle === mOpponent) {
-                movePaddle(paddle, paddle!!.bounds.left, paddle.bounds.top + dy)
+
+            if (paddle === this.player2) {
+                val newLeft = paddle!!.bounds.left + dx
+                val newTop = paddle.bounds.top + dy
+
+                // defines the boundary that basically disallows the paddle from crossing
+                // the center circle which is -130 units(from the right) from half of the table
+                val boundary = mTableWidth / 2 + 150f  // Adjust the value as needed
+
+                // this will then only move the paddle if the position doesn't(greater then or equals too) cross the
+                // boundary(-130 units from the center) so its coming from the right
+                if (newLeft >= boundary) {
+                    movePaddle(paddle, newLeft, newTop)
+                }
             }
         }
     }
@@ -458,15 +496,13 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
         placePaddles()
     }
 
+    // resets the paddles(player1/player2) to their starting position
     private fun placePaddles() {
-        paddle!!.bounds.offsetTo(2f, ((mTableHeight - paddle!!.requestHeight) / 2).toFloat())
-        mOpponent!!.bounds.offsetTo(
-            (mTableWidth - mOpponent!!.requestWidth).toFloat()
-                    - 2,
-            ((mTableHeight - mOpponent!!.requestHeight) / 2).toFloat()
-        )
+        player1!!.bounds.offsetTo(2f, ((mTableHeight - player1!!.requestHeight) / 2).toFloat())
+        player2!!.bounds.offsetTo((mTableWidth - player2!!.requestWidth).toFloat() - 2, ((mTableHeight - player2!!.requestHeight) / 2).toFloat())
     }
 
+    // resets the puck to their initial position
     private fun placePuck() {
         puck!!.centerX = (mTableWidth / 2).toFloat()
         puck!!.centerY = (mTableHeight / 2).toFloat()
@@ -475,22 +511,18 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
     }
 
     fun resumeGame() {
-        if (game!!.isBetweenRounds) {
-            game!!.setRunning(true)
-            game!!.setState(STATE_RUNNING)
+        if (twoPlayerGame!!.isBetweenRounds) {
+            twoPlayerGame!!.setRunning(true)
+            twoPlayerGame!!.setState(STATE_RUNNING)
         }
     }
 
-    fun getMOpponent(): Paddle? {
-        return mOpponent
+    fun setScorePlayer1(view: TextView?) {
+        mScorePlayer1 = view
     }
 
-    fun setScorePlayer(view: TextView?) {
-        mScorePlayer = view
-    }
-
-    fun setScoreOpponent(view: TextView?) {
-        mScoreOpponent = view
+    fun setScorePlayer2(view: TextView?) {
+        mScorePlayer2 = view
     }
 
     fun setStatus(view: TextView?) {
@@ -500,7 +532,6 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
     fun setTableBoundsColor(color: Int) {
         mTableBoundsPaint!!.color = color
     }
-
 
     private fun releaseSounds() {
         puckHitSound?.release()
