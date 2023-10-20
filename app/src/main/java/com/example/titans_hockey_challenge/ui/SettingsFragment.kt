@@ -12,7 +12,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.titans_hockey_challenge.R
 import com.example.titans_hockey_challenge.databinding.FragmentSettingsBinding
-import com.example.titans_hockey_challenge.models.SoundViewModel
+import com.example.titans_hockey_challenge.viewmodels.SoundViewModel
 
 
 class SettingsFragment : Fragment() {

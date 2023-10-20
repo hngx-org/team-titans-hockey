@@ -2,21 +2,18 @@ package com.example.titans_hockey_challenge.ui
 
 import android.media.MediaPlayer
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.titans_hockey_challenge.R
 import com.example.titans_hockey_challenge.databinding.FragmentGameBinding
-import com.example.titans_hockey_challenge.models.SoundViewModel
+import com.example.titans_hockey_challenge.viewmodels.SoundViewModel
 
 class GameFragment : Fragment() {
 

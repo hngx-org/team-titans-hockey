@@ -83,9 +83,9 @@ class TwoPlayerHockeyTable : SurfaceView, SurfaceHolder.Callback {
         })
 
         val a = ctx.obtainStyledAttributes(attr, R.styleable.HockeyTable)
-        val strikerHeight = a.getInteger(R.styleable.HockeyTable_racketHeight, 150)
-        val strikerWidth = a.getInteger(R.styleable.HockeyTable_racketWidth, 150)
-        val puckRadius = a.getInteger(R.styleable.HockeyTable_puckRadius, 40)
+        val strikerHeight = a.getInteger(R.styleable.HockeyTable_racketHeight, 140)
+        val strikerWidth = a.getInteger(R.styleable.HockeyTable_racketWidth, 140)
+        val puckRadius = a.getInteger(R.styleable.HockeyTable_puckRadius, 35)
 
         // Set Player
         val player1Paint = Paint()
@@ -128,7 +128,7 @@ class TwoPlayerHockeyTable : SurfaceView, SurfaceHolder.Callback {
         // Draw circular and middle line
         mNetPaint = Paint()
         mNetPaint!!.isAntiAlias = true
-        mNetPaint!!.color = Color.BLACK
+        mNetPaint!!.color = ContextCompat.getColor(mContext!!, R.color.forest_green)
         mNetPaint!!.alpha = 100
         mNetPaint!!.style = Paint.Style.STROKE
         mNetPaint!!.strokeWidth = 8f
@@ -144,7 +144,7 @@ class TwoPlayerHockeyTable : SurfaceView, SurfaceHolder.Callback {
         mGoalPostBoundsPaint = Paint()
         mGoalPostBoundsPaint!!.isAntiAlias = true
         mGoalPostBoundsPaint!!.color = Color.BLACK
-        mGoalPostBoundsPaint!!.style = Paint.Style.STROKE
+        mGoalPostBoundsPaint!!.style = Paint.Style.FILL
         mGoalPostBoundsPaint!!.strokeWidth = 35f
     }
 
@@ -169,12 +169,13 @@ class TwoPlayerHockeyTable : SurfaceView, SurfaceHolder.Callback {
 
             // Draw middle line
             val middle = mTableWidth / 2
-            canvas.drawLine(middle.toFloat(), 1f, middle.toFloat(), (mTableHeight - 1).toFloat(), mNetPaint!!)
+            canvas.drawLine(middle.toFloat(), 18f, middle.toFloat(), (mTableHeight - 18).toFloat(), mNetPaint!!)
 
             // Draw circular line
             val centerY = mTableHeight.toFloat() / 2
-            val radius = minOf(middle, mTableHeight / 4) - 6f
+            val radius = minOf(middle, mTableHeight / 4) - 13f
             canvas.drawCircle(middle.toFloat(), centerY, radius, mNetPaint!!)
+            canvas.drawCircle(middle.toFloat(), mTableHeight.toFloat() / 2, 25f, mGoalPostBoundsPaint!!)
 
             // Draw goal post line
             // left goal post
@@ -183,11 +184,14 @@ class TwoPlayerHockeyTable : SurfaceView, SurfaceHolder.Callback {
             val goalPostY2 = centerY + radius
             canvas.drawLine(leftGoalPostX, goalPostY1, leftGoalPostX, goalPostY2, mGoalPostBoundsPaint!!)
             canvas.drawCircle(leftGoalPostX, centerY, radius, mNetPaint!!)
+            canvas.drawLine(430f, 18f, 430f, (mTableHeight - 18).toFloat(), mNetPaint!!)
 
             // right goal post
             val rightGoalPostX = mTableWidth.toFloat() - 1
             canvas.drawLine(rightGoalPostX, goalPostY1, rightGoalPostX, goalPostY2, mGoalPostBoundsPaint!!)
             canvas.drawCircle(rightGoalPostX, centerY, radius, mNetPaint!!)
+            canvas.drawLine(mTableWidth - 430f, 18f, mTableWidth - 430f, (mTableHeight - 18).toFloat(), mNetPaint!!)
+
 
             twoPlayerGame!!.setScoreText(
                 player1!!.score.toString(), player2!!.score.toString()
@@ -312,6 +316,13 @@ class TwoPlayerHockeyTable : SurfaceView, SurfaceHolder.Callback {
     fun pauseBackgroundSound() {
         if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
             mediaPlayer?.pause()
+        }
+    }
+
+    fun stopBackgroundSound() {
+        if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
+            mediaPlayer?.stop()
+            mediaPlayer = null
         }
     }
 

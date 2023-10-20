@@ -44,7 +44,7 @@
     <string name="about"><![CDATA[<About>]]></string>
     <string name="exit_game">Exit Game</string>
     <string name="resume_game">Resume</string>
-    <string name="paused">Paused</string>
+    <string name="paused">Game Paused</string>
     <string name="sound_text">Sound</string>
 
 
