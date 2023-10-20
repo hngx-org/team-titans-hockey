@@ -25,4 +25,7 @@
     <color name="dark_gray">#FF373A38</color>
     <color name="semi_transparent_white">#80FFFFFF</color>
     <color name="semi_transparent_light_gray">#80CCCCCC</color>
+
+    // other colors
+    <color name="forest_green">#0B6623</color>
 </resources>
