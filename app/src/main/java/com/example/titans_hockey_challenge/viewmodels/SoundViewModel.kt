@@ -1,4 +1,4 @@
-package com.example.titans_hockey_challenge.models
+package com.example.titans_hockey_challenge.viewmodels
 
 import android.app.Application
 import android.media.MediaPlayer

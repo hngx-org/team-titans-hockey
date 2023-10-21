@@ -1,4 +1,4 @@
-package com.example.titans_hockey_challenge.models
+package com.example.titans_hockey_challenge.ui.hockeytable
 
 import android.content.Context
 import android.graphics.Canvas
@@ -10,16 +10,14 @@ import android.media.MediaPlayer
 import android.os.Handler
 import android.os.Message
 import android.util.AttributeSet
-import android.util.Log
 import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
-import android.widget.Button
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import com.example.titans_hockey_challenge.R
+import com.example.titans_hockey_challenge.models.Paddle
+import com.example.titans_hockey_challenge.models.Puck
 import com.example.titans_hockey_challenge.utils.GameThread
 import com.example.titans_hockey_challenge.utils.PUCK_SPEED
 import com.example.titans_hockey_challenge.utils.STATE_LOSE
@@ -59,12 +57,8 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
     private var wallHitSound: MediaPlayer? = null
     private var goalPostHitSound: MediaPlayer? = null
 
-    private var viewModel: LevelsDifficultyViewModel? = null
 
-
-
-    //change
-    fun initHockeyTable(ctx: Context, attr: AttributeSet?) {
+    private fun initHockeyTable(ctx: Context, attr: AttributeSet?) {
         mContext = ctx
         mHolder = holder
         mHolder!!.addCallback(this)
@@ -83,9 +77,9 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
         })
 
         val a = ctx.obtainStyledAttributes(attr, R.styleable.HockeyTable)
-        val strikerHeight = a.getInteger(R.styleable.HockeyTable_racketHeight, 150)
-        val strikerWidth = a.getInteger(R.styleable.HockeyTable_racketWidth, 150)
-        val puckRadius = a.getInteger(R.styleable.HockeyTable_puckRadius, 40)
+        val strikerHeight = a.getInteger(R.styleable.HockeyTable_racketHeight, 140)
+        val strikerWidth = a.getInteger(R.styleable.HockeyTable_racketWidth, 140)
+        val puckRadius = a.getInteger(R.styleable.HockeyTable_puckRadius, 35)
 
         // Set Player
         val playerPaint = Paint()
@@ -128,8 +122,8 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
         // Draw circular and middle line
         mNetPaint = Paint()
         mNetPaint!!.isAntiAlias = true
-        mNetPaint!!.color = Color.BLACK
-        mNetPaint!!.alpha = 100
+        mNetPaint!!.color = ContextCompat.getColor(mContext!!, R.color.forest_green)
+//        mNetPaint!!.alpha = 100
         mNetPaint!!.style = Paint.Style.STROKE
         mNetPaint!!.strokeWidth = 8f
 
@@ -138,13 +132,13 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
         mTableBoundsPaint!!.isAntiAlias = true
         mTableBoundsPaint!!.style = Paint.Style.STROKE
         mTableBoundsPaint!!.strokeWidth = 35f
-       // mAiMoveProbability = 0.8f
+        mAiMoveProbability = 0.8f
 
         // Draw Goal post
         mGoalPostBoundsPaint = Paint()
         mGoalPostBoundsPaint!!.isAntiAlias = true
         mGoalPostBoundsPaint!!.color = Color.BLACK
-        mGoalPostBoundsPaint!!.style = Paint.Style.STROKE
+        mGoalPostBoundsPaint!!.style = Paint.Style.FILL
         mGoalPostBoundsPaint!!.strokeWidth = 35f
     }
 
@@ -169,12 +163,13 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
 
             // Draw middle line
             val middle = mTableWidth / 2
-            canvas.drawLine(middle.toFloat(), 1f, middle.toFloat(), (mTableHeight - 1).toFloat(), mNetPaint!!)
+            canvas.drawLine(middle.toFloat(), 18f, middle.toFloat(), (mTableHeight - 18).toFloat(), mNetPaint!!)
 
             // Draw circular line
             val centerY = mTableHeight.toFloat() / 2
-            val radius = minOf(middle, mTableHeight / 4) - 6f
+            val radius = minOf(middle, mTableHeight / 4) - 13f
             canvas.drawCircle(middle.toFloat(), centerY, radius, mNetPaint!!)
+            canvas.drawCircle(middle.toFloat(), mTableHeight.toFloat() / 2, 25f, mGoalPostBoundsPaint!!)
 
             // Draw goal post line
             // left goal post
@@ -183,11 +178,13 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
             val goalPostY2 = centerY + radius
             canvas.drawLine(leftGoalPostX, goalPostY1, leftGoalPostX, goalPostY2, mGoalPostBoundsPaint!!)
             canvas.drawCircle(leftGoalPostX, centerY, radius, mNetPaint!!)
+            canvas.drawLine(430f, 18f, 430f, (mTableHeight - 18).toFloat(), mNetPaint!!)
 
             // right goal post
             val rightGoalPostX = mTableWidth.toFloat() - 1
             canvas.drawLine(rightGoalPostX, goalPostY1, rightGoalPostX, goalPostY2, mGoalPostBoundsPaint!!)
             canvas.drawCircle(rightGoalPostX, centerY, radius, mNetPaint!!)
+            canvas.drawLine(mTableWidth - 430f, 18f, mTableWidth - 430f, (mTableHeight - 18).toFloat(), mNetPaint!!)
 
             game!!.setScoreText(
                 paddle!!.score.toString(), mOpponent!!.score.toString()
@@ -234,86 +231,95 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
         }
     }
 
-
-
-    fun updateAISpeed(difficulty: Float) {
-        mAiMoveProbability = calculateAISpeed(difficulty)
-        Log.d("mAi", "updateAISpeed called with difficulty: $mAiMoveProbability")
-
-    }
-
-    private fun calculateAISpeed(difficulty: Float): Float {
-
-        return when (difficulty) {
-            30f -> 0.8f // Easy level
-            50f -> 1.8f // Medium level
-            100f -> 2.9f // Hard level
-            else -> 0.8f // Default value
-        }
-    }
-
-
     private fun doAI() {
+
         val aiPaddle = mOpponent!!
         val puck = puck!!
-
-
-        var aiSpeed =  viewModel?.gameDifficulty?.value ?: 10f
-
-        viewModel?.gameDifficulty?.observeForever {
-            aiSpeed = it
-            Log.d("curddddrent", "this is the speed value $it")
-
-            mAiMoveProbability = when (aiSpeed) {
-                30f -> 0.8f // Easy level
-                50f -> 1.8f // Medium level
-                100f -> 2.9f // Hard level
-                else -> 0.8f // Default value
-            }
-
-        }
-
-        Log.d("lolly", "this is the speed value $aiSpeed")
-        Log.d("lpopy", "this is the move value $mAiMoveProbability")
-
+        // this adjusts the ai speed
+        val aiSpeed = 5f
+        val initialY = mTableHeight / 2 - aiPaddle.requestHeight / 2
+        val initialX = mTableWidth - aiPaddle.requestWidth - 2
+        // distance -200 from the center of the table, which is the right
+        val boundary = mTableWidth / 2 - 150f
 
         // Check if the puck is on the AI's side of the table (approaching the black goal line)
-            if (puck.centerX > mTableWidth / 2) {
-                // Calculate the desired AI paddle position
-                val desiredY = puck.centerY - aiPaddle.requestHeight / 2
+        if (puck.centerX > mTableWidth / 2) {
+            // Calculate the desired AI paddle position based on the puck's position
+            val desiredY = puck.centerY - aiPaddle.requestHeight / 2
+            val desiredX = puck.centerX - aiPaddle.requestWidth / 2
 
-                // Ensure that the AI paddle stays on its side of the table
-                if (desiredY < 0) {
-                    // AI paddle is at the top boundary
-                    movePaddle(aiPaddle, aiPaddle.bounds.left, 0f)
-                } else if (desiredY + aiPaddle.requestHeight > mTableHeight) {
-                    // AI paddle is at the bottom boundary
-                    movePaddle(
-                        aiPaddle,
-                        aiPaddle.bounds.left,
-                        (mTableHeight - aiPaddle.requestHeight).toFloat()
-                    )
-                } else {
-                    // Move the AI paddle smoothly towards the desired position with a controlled speed
-                    val deltaY = desiredY - aiPaddle.bounds.top
-                    val moveDistance = aiSpeed.coerceAtMost(Math.abs(deltaY))
-                    val newTop =
-                        aiPaddle.bounds.top + if (deltaY > 0) moveDistance else -moveDistance
-                    movePaddle(aiPaddle, aiPaddle.bounds.left, newTop)
-                }
+            // Ensure that the AI paddle stays on its side of the table
+            val maxMoveDistance = aiSpeed
+            val deltaY = desiredY - aiPaddle.bounds.top
+            val deltaX = desiredX - aiPaddle.bounds.left
+
+            if (deltaY > maxMoveDistance) {
+                // AI paddle is below the desired position, move it closer
+                val newTop = aiPaddle.bounds.top + maxMoveDistance
+                movePaddle(aiPaddle, aiPaddle.bounds.left, newTop)
+            } else if (deltaY < -maxMoveDistance) {
+                // AI paddle is above the desired position, move it closer
+                val newTop = aiPaddle.bounds.top - maxMoveDistance
+                movePaddle(aiPaddle, aiPaddle.bounds.left, newTop)
+            } else {
+                // The AI is close to the desired vertical position, let it move at max speed
+                val newTop = aiPaddle.bounds.top + deltaY
+                movePaddle(aiPaddle, aiPaddle.bounds.left, newTop)
             }
 
-          /*  Log.d("lolly", "this is the speed value $aiSpeed")
-            Log.d("lpopy", "this is the move value $mAiMoveProbability")
-*/
+            if (deltaX > maxMoveDistance) {
+                // AI paddle is to the right of the desired position, move it closer
+                val newLeft = aiPaddle.bounds.left + maxMoveDistance
+                movePaddle(aiPaddle, newLeft, aiPaddle.bounds.top)
+            } else if (deltaX < -maxMoveDistance) {
+                // AI paddle is to the left of the desired position, move it closer
+                val newLeft = aiPaddle.bounds.left - maxMoveDistance
+                movePaddle(aiPaddle, newLeft, aiPaddle.bounds.top)
+            } else {
+                // The AI is close to the desired horizontal position, let it move at max speed
+                val newLeft = aiPaddle.bounds.left + deltaX
+                movePaddle(aiPaddle, newLeft, aiPaddle.bounds.top)
+            }
 
+            // Check if the AI paddle is beyond the boundary and move it back
+            if (aiPaddle.bounds.left < boundary) {
+                movePaddle(aiPaddle, boundary, aiPaddle.bounds.top)
+            }
+        } else {
+            // Puck is on the opposite side, move the AI paddle back to its initial position
+            val deltaY = initialY - aiPaddle.bounds.top
+            val deltaX = initialX - aiPaddle.bounds.left
+            val maxMoveDistance = aiSpeed
 
+            if (deltaY > maxMoveDistance) {
+                // AI paddle is far from the initial vertical position, move it closer
+                val newTop = aiPaddle.bounds.top + maxMoveDistance
+                movePaddle(aiPaddle, aiPaddle.bounds.left, newTop)
+            } else if (deltaY < -maxMoveDistance) {
+                // AI paddle is far above the initial vertical position, move it closer
+                val newTop = aiPaddle.bounds.top - maxMoveDistance
+                movePaddle(aiPaddle, aiPaddle.bounds.left, newTop)
+            } else {
+                // The AI is close to its initial vertical position, let it move at max speed
+                val newTop = aiPaddle.bounds.top + deltaY
+                movePaddle(aiPaddle, aiPaddle.bounds.left, newTop)
+            }
 
-
-
-
+            if (deltaX > maxMoveDistance) {
+                // AI paddle is to the right of the initial horizontal position, move it closer
+                val newLeft = aiPaddle.bounds.left + maxMoveDistance
+                movePaddle(aiPaddle, newLeft, aiPaddle.bounds.top)
+            } else if (deltaX < -maxMoveDistance) {
+                // AI paddle is to the left of the initial horizontal position, move it closer
+                val newLeft = aiPaddle.bounds.left - maxMoveDistance
+                movePaddle(aiPaddle, newLeft, aiPaddle.bounds.top)
+            } else {
+                // The AI is close to its initial horizontal position, let it move at max speed
+                val newLeft = aiPaddle.bounds.left + deltaX
+                movePaddle(aiPaddle, newLeft, aiPaddle.bounds.top)
+            }
+        }
     }
-
 
     fun update(canvas: Canvas?) {
         if (!game!!.isPaused) {
@@ -366,6 +372,12 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
         return puck!!.centerX - puck!!.radius <= goalPostX && puck!!.centerX + puck!!.radius >= goalPostX
     }
 
+    // TODO - WHEN I COME BACK TOMORROW MY TASKS ARE AS FOLLOWS :
+    //  NUMBER 1 - TRY TO IMPROVE THE PHYSICS AND MOVEMENTS OF THE PUCK FOR A MORE REALISTIC EXPERIENCE.
+    //  NUMBER 2 - TRY TO FIND THE ISSUE REGARDING THE GOAL IMPLEMENTATION WHERE SOMETIMES IT COUNTS AS A GOAL AND SOMETIMES, IT DOESN'T.
+    //  NUMBER 3 - TRY AND SEE IF I CAN MAKE MORE IMPROVEMENTS TO THE LOOK OF TABLE IF MORE IDEAS COME.
+    //  NUMBER 4 - EXPLORE THE POSSIBILITY OF ADDING ANOTHER GAME RULE(NUMBER OF ROUNDS TO BE DECLARED A WINNER) IF WE HAVE MORE TIME.
+
     private fun handleCollision(paddle: Paddle?, puck: Puck?) {
         // Reverses the X velocity which sorts of bounces it back
         puck!!.velocityX = -puck.velocityX
@@ -397,6 +409,13 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
     fun pauseBackgroundSound() {
         if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
             mediaPlayer?.pause()
+        }
+    }
+
+    fun stopBackgroundSound() {
+        if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
+            mediaPlayer?.stop()
+            mediaPlayer = null
         }
     }
 
@@ -487,8 +506,19 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
     private fun movePaddleStriker(dx: Float, dy: Float, paddle: Paddle?) {
         synchronized(mHolder!!) {
             if (paddle === this.paddle) {
-                movePaddle(paddle, paddle!!.bounds.left + dx, paddle.bounds.top + dy)
-            } else if (paddle === mOpponent) {
+                val newLeft = paddle!!.bounds.left + dx
+                val newTop = paddle.bounds.top + dy
+
+                // defines the boundary that basically disallows the paddle from crossing
+                // the center circle which is 130 units from half of the table
+                val boundary = mTableWidth / 2 - 130f
+
+                // this will then only move the paddle if the position doesn't(lesser then or equals too) cross the
+                // boundary(130 units from the center)
+                if (newLeft + paddle.requestWidth <= boundary) {
+                    movePaddle(paddle, newLeft, newTop)
+                }
+            } else if (paddle === mOpponent)  {
                 movePaddle(paddle, paddle!!.bounds.left, paddle.bounds.top + dy)
             }
         }
@@ -558,7 +588,6 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
     fun setTableBoundsColor(color: Int) {
         mTableBoundsPaint!!.color = color
     }
-
 
     private fun releaseSounds() {
         puckHitSound?.release()

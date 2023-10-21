@@ -17,20 +17,19 @@
             android:id="@+id/action_gameFragment_to_blankFragment"
             app:destination="@id/settingsFragment" />
         <action
-            android:id="@+id/action_gameFragment_to_levelsFragment"
-            app:destination="@id/levelsFragment" />
+            android:id="@+id/action_gameFragment_to_twoPlayerHockeyFragment2"
+            app:destination="@id/twoPlayerHockeyFragment2" />
 
 
     </fragment>
     <fragment
         android:id="@+id/hockeyFragment"
-        android:name="com.example.titans_hockey_challenge.ui.HockeyFragment"
+        android:name="com.example.titans_hockey_challenge.ui.hockeytable.HockeyFragment"
         android:label="fragment_hockey"
         tools:layout="@layout/fragment_hockey" >
         <action
             android:id="@+id/to_gameFragment"
-            app:destination="@id/gameFragment"
-            app:popUpTo="@id/gameFragment" />
+            app:destination="@id/gameFragment" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
@@ -62,16 +61,18 @@
         android:id="@+id/startFragment"
         android:name="com.example.titans_hockey_challenge.ui.StartFragment"
         android:label="fragment_start"
-        tools:layout="@layout/fragment_start" />
-    <fragment
-        android:id="@+id/levelsFragment"
-        android:name="com.example.titans_hockey_challenge.ui.LevelsFragment"
-        android:label="fragment_levels"
-        tools:layout="@layout/fragment_levels" >
+        tools:layout="@layout/fragment_start" >
         <action
-            android:id="@+id/action_levelsFragment_to_hockeyFragment"
-            app:destination="@id/hockeyFragment" />
+            android:id="@+id/action_startFragment_to_gameFragment"
+            app:destination="@id/gameFragment" />
     </fragment>
 
-
+    <fragment
+        android:id="@+id/twoPlayerHockeyFragment2"
+        android:name="com.example.titans_hockey_challenge.ui.twoplayertable.TwoPlayerHockeyFragment"
+        android:label="TwoPlayerHockeyFragment" >
+        <action
+            android:id="@+id/action_twoPlayerHockeyFragment2_to_gameFragment"
+            app:destination="@id/gameFragment" />
+    </fragment>
 </navigation>
