@@ -12,15 +12,5 @@ class LevelsDifficultyViewModel : ViewModel() {
     fun setDifficultyLevel(difficulty: Float) {
         _gameDifficulty.value = difficulty
     }
-    fun setEasyLevel() {
-        _gameDifficulty.value = 5f
-    }
 
-    fun setMediumLevel() {
-        _gameDifficulty.value = 10f
-    }
-
-    fun setHardLevel() {
-        _gameDifficulty.value = 15f
-    }
 }

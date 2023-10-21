@@ -10,18 +10,19 @@ import android.media.MediaPlayer
 import android.os.Handler
 import android.os.Message
 import android.util.AttributeSet
+import android.util.Log
 import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
+import android.widget.Button
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import com.example.titans_hockey_challenge.R
 import com.example.titans_hockey_challenge.utils.GameThread
 import com.example.titans_hockey_challenge.utils.PUCK_SPEED
-import com.example.titans_hockey_challenge.utils.RACQUET_SPEED
 import com.example.titans_hockey_challenge.utils.STATE_LOSE
-import com.example.titans_hockey_challenge.utils.STATE_PAUSED
 import com.example.titans_hockey_challenge.utils.STATE_RUNNING
 import com.example.titans_hockey_challenge.utils.STATE_WIN
 import java.util.Random
@@ -58,7 +59,11 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
     private var wallHitSound: MediaPlayer? = null
     private var goalPostHitSound: MediaPlayer? = null
 
+    private var viewModel: LevelsDifficultyViewModel? = null
 
+
+
+    //change
     fun initHockeyTable(ctx: Context, attr: AttributeSet?) {
         mContext = ctx
         mHolder = holder
@@ -133,7 +138,7 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
         mTableBoundsPaint!!.isAntiAlias = true
         mTableBoundsPaint!!.style = Paint.Style.STROKE
         mTableBoundsPaint!!.strokeWidth = 35f
-        mAiMoveProbability = 0.8f
+       // mAiMoveProbability = 0.8f
 
         // Draw Goal post
         mGoalPostBoundsPaint = Paint()
@@ -229,41 +234,84 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
         }
     }
 
+
+
+    fun updateAISpeed(difficulty: Float) {
+        mAiMoveProbability = calculateAISpeed(difficulty)
+        Log.d("mAi", "updateAISpeed called with difficulty: $mAiMoveProbability")
+
+    }
+
+    private fun calculateAISpeed(difficulty: Float): Float {
+
+        return when (difficulty) {
+            30f -> 0.8f // Easy level
+            50f -> 1.8f // Medium level
+            100f -> 2.9f // Hard level
+            else -> 0.8f // Default value
+        }
+    }
+
+
     private fun doAI() {
         val aiPaddle = mOpponent!!
         val puck = puck!!
 
-        val aiSpeed = 10f  // Adjust the AI speed based on your preference
 
+        var aiSpeed =  viewModel?.gameDifficulty?.value ?: 10f
 
+        viewModel?.gameDifficulty?.observeForever {
+            aiSpeed = it
+            Log.d("curddddrent", "this is the speed value $it")
 
-        // Retrieve the difficulty level from the ViewModel
-        val viewModel = ViewModelProvider(owner, ViewModelProvider.AndroidViewModelFactory.getInstance(this.context!!))
-            .get(LevelsDifficultyViewModel::class.java)
-        val difficultyLevel = viewModel.gameDifficulty.value ?: 10f // Default to medium difficulty
+            mAiMoveProbability = when (aiSpeed) {
+                30f -> 0.8f // Easy level
+                50f -> 1.8f // Medium level
+                100f -> 2.9f // Hard level
+                else -> 0.8f // Default value
+            }
 
+        }
+
+        Log.d("lolly", "this is the speed value $aiSpeed")
+        Log.d("lpopy", "this is the move value $mAiMoveProbability")
 
 
         // Check if the puck is on the AI's side of the table (approaching the black goal line)
-        if (puck.centerX > mTableWidth / 2) {
-            // Calculate the desired AI paddle position
-            val desiredY = puck.centerY - aiPaddle.requestHeight / 2
+            if (puck.centerX > mTableWidth / 2) {
+                // Calculate the desired AI paddle position
+                val desiredY = puck.centerY - aiPaddle.requestHeight / 2
 
-            // Ensure that the AI paddle stays on its side of the table
-            if (desiredY < 0) {
-                // AI paddle is at the top boundary
-                movePaddle(aiPaddle, aiPaddle.bounds.left, 0f)
-            } else if (desiredY + aiPaddle.requestHeight > mTableHeight) {
-                // AI paddle is at the bottom boundary
-                movePaddle(aiPaddle, aiPaddle.bounds.left, (mTableHeight - aiPaddle.requestHeight).toFloat())
-            } else {
-                // Move the AI paddle smoothly towards the desired position with a controlled speed
-                val deltaY = desiredY - aiPaddle.bounds.top
-                val moveDistance = aiSpeed.coerceAtMost(Math.abs(deltaY))
-                val newTop = aiPaddle.bounds.top + if (deltaY > 0) moveDistance else -moveDistance
-                movePaddle(aiPaddle, aiPaddle.bounds.left, newTop)
+                // Ensure that the AI paddle stays on its side of the table
+                if (desiredY < 0) {
+                    // AI paddle is at the top boundary
+                    movePaddle(aiPaddle, aiPaddle.bounds.left, 0f)
+                } else if (desiredY + aiPaddle.requestHeight > mTableHeight) {
+                    // AI paddle is at the bottom boundary
+                    movePaddle(
+                        aiPaddle,
+                        aiPaddle.bounds.left,
+                        (mTableHeight - aiPaddle.requestHeight).toFloat()
+                    )
+                } else {
+                    // Move the AI paddle smoothly towards the desired position with a controlled speed
+                    val deltaY = desiredY - aiPaddle.bounds.top
+                    val moveDistance = aiSpeed.coerceAtMost(Math.abs(deltaY))
+                    val newTop =
+                        aiPaddle.bounds.top + if (deltaY > 0) moveDistance else -moveDistance
+                    movePaddle(aiPaddle, aiPaddle.bounds.left, newTop)
+                }
             }
-        }
+
+          /*  Log.d("lolly", "this is the speed value $aiSpeed")
+            Log.d("lpopy", "this is the move value $mAiMoveProbability")
+*/
+
+
+
+
+
+
     }
 
 

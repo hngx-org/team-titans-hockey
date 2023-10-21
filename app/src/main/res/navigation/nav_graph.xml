@@ -29,7 +29,8 @@
         tools:layout="@layout/fragment_hockey" >
         <action
             android:id="@+id/to_gameFragment"
-            app:destination="@id/gameFragment" />
+            app:destination="@id/gameFragment"
+            app:popUpTo="@id/gameFragment" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"

@@ -1,15 +1,20 @@
 package com.example.titans_hockey_challenge.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.titans_hockey_challenge.R
 import com.example.titans_hockey_challenge.databinding.FragmentHockeyBinding
 import com.example.titans_hockey_challenge.models.HockeyTable
+import com.example.titans_hockey_challenge.models.LevelsDifficultyViewModel
 import com.example.titans_hockey_challenge.models.SoundViewModel
 import com.example.titans_hockey_challenge.utils.GameThread
 
@@ -20,6 +25,9 @@ class HockeyFragment : Fragment() {
     private var _binding: FragmentHockeyBinding? = null
     private val binding get() = _binding !!
     private val soundViewModel: SoundViewModel by activityViewModels()
+    private val levelsViewModel: LevelsDifficultyViewModel by activityViewModels()
+
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         // Inflate the layout for this fragment
@@ -53,6 +61,18 @@ class HockeyFragment : Fragment() {
         binding.exitGame.setOnClickListener {
             findNavController().popBackStack(R.id.gameFragment, false)
         }
+
+        levelsViewModel.gameDifficulty.observe(viewLifecycleOwner, Observer { difficulty ->
+            hockeyTable.updateAISpeed(difficulty ?: 10f)
+            Log.d("lolmkmly", "this is the speed value $difficulty")
+
+        })
+      //  hockeyTable.updateAISpeed(levelsViewModel.gameDifficulty.value ?: 10f)
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+                findNavController().popBackStack(R.id.gameFragment,false)
+        }
+
     }
 
     override fun onDestroy() {
