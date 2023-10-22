@@ -46,6 +46,31 @@
     <string name="resume_game">Resume</string>
     <string name="paused">Game Paused</string>
     <string name="sound_text">Sound</string>
+    <string name="puck">Puck</string>
+    <string name="customize"><![CDATA[<Customize>]]></string>
+    <string name="customizee">Customize</string>
+    <string name="paddle">Paddle</string>
+    <string name="customize_caption">Personalize play: select puck and paddle!</string>
+    <string name="back_button">Back button</string>
+
+    // Dialog colors
+    <color name="positiveButtonTextColor">@color/forest_green</color>
+    <color name="negativeButtonTextColor">@color/red</color>
+    <color name="bottomSheetDividerColor">@color/grey_200</color>
+
+    <array name="themeColors">
+        <item>@color/green_500</item>
+        <item>@color/opponent_color</item>
+        <item>@color/red_500</item>
+        <item>@color/grey_500</item>
+        <item>@color/orange_500</item>
+        <item>@color/pink_500</item>
+        <item>@color/purple_500</item>
+        <item>@color/green</item>
+        <item>@color/deep_purple_500</item>
+        <item>@color/deep_orange_700</item>
+        <item>@color/dark_gray</item>
+    </array>
 
 
 </resources>

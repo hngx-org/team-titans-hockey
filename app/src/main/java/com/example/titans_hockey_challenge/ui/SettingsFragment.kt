@@ -61,6 +61,10 @@ class SettingsFragment : Fragment() {
                 findNavController().navigate(R.id.rulesFragment)
             }
 
+            customizeTV.setOnClickListener {
+                findNavController().navigate(R.id.customizeFragment)
+            }
+
             abtTv.setOnClickListener {
                 findNavController().navigate(R.id.aboutFragment)
             }

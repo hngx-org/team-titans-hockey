@@ -4,20 +4,42 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.ThemeFragment">
+    tools:context=".ui.CustomizeFragment">
+
+    <ImageView
+        android:id="@+id/backButton"
+        android:layout_width="45dp"
+        android:layout_height="35dp"
+        android:src="@drawable/bckarrow"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="@id/startGuideline"
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/back_button" />
 
     <TextView
-        android:id="@+id/themeHeader"
+        android:id="@+id/customizeHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
         android:fontFamily="@font/press_start_2p"
-        android:text="@string/themes"
-        android:textColor="@color/black"
+        android:text="@string/customizee"
+        android:textColor="#FF8400"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/backButton" />
+
+    <TextView
+        android:id="@+id/customizeCaption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:fontFamily="@font/press_start_2p"
+        android:text="@string/customize_caption"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="@id/endGuideline"
+        app:layout_constraintStart_toStartOf="@id/startGuideline"
+        app:layout_constraintTop_toBottomOf="@id/customizeHeader" />
 
     <TextView
         android:id="@+id/puckText"
@@ -31,7 +53,7 @@
         android:textSize="16sp"
         app:layout_constraintEnd_toStartOf="@id/puckButton"
         app:layout_constraintStart_toStartOf="@id/startGuideline"
-        app:layout_constraintTop_toBottomOf="@id/themeHeader" />
+        app:layout_constraintTop_toBottomOf="@id/customizeCaption" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/puckButton"
