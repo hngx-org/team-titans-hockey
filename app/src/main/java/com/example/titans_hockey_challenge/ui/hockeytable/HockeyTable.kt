@@ -10,12 +10,14 @@ import android.media.MediaPlayer
 import android.os.Handler
 import android.os.Message
 import android.util.AttributeSet
+import android.util.Log
 import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.example.titans_hockey_challenge.R
+import com.example.titans_hockey_challenge.viewmodels.LevelsDifficultySharedViewModel
 import com.example.titans_hockey_challenge.models.Paddle
 import com.example.titans_hockey_challenge.models.Puck
 import com.example.titans_hockey_challenge.utils.GameThread
@@ -56,6 +58,7 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
     private var losingSound: MediaPlayer? = null
     private var wallHitSound: MediaPlayer? = null
     private var goalPostHitSound: MediaPlayer? = null
+    var aiSpeed = 0.0f
 
 
     private fun initHockeyTable(ctx: Context, attr: AttributeSet?) {
@@ -232,15 +235,14 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
     }
 
     private fun doAI() {
-
         val aiPaddle = mOpponent!!
         val puck = puck!!
-        // this adjusts the ai speed
-        val aiSpeed = 5f
+
         val initialY = mTableHeight / 2 - aiPaddle.requestHeight / 2
         val initialX = mTableWidth - aiPaddle.requestWidth - 2
         // distance -200 from the center of the table, which is the right
         val boundary = mTableWidth / 2 - 150f
+
 
         // Check if the puck is on the AI's side of the table (approaching the black goal line)
         if (puck.centerX > mTableWidth / 2) {

@@ -19,6 +19,9 @@
         <action
             android:id="@+id/action_gameFragment_to_twoPlayerHockeyFragment2"
             app:destination="@id/twoPlayerHockeyFragment2" />
+        <action
+            android:id="@+id/action_gameFragment_to_levelsFragment"
+            app:destination="@id/levelsFragment" />
 
 
     </fragment>
@@ -75,4 +78,20 @@
             android:id="@+id/action_twoPlayerHockeyFragment2_to_gameFragment"
             app:destination="@id/gameFragment" />
     </fragment>
+
+
+
+    <fragment
+        android:id="@+id/levelsFragment"
+        android:name="com.example.titans_hockey_challenge.ui.LevelsFragment"
+        android:label="fragment_levels"
+        tools:layout="@layout/fragment_levels" >
+
+        <action
+            android:id="@+id/action_levelsFragment_to_hockeyFragment"
+            app:destination="@id/hockeyFragment"
+            />
+    </fragment>
+
+
 </navigation>

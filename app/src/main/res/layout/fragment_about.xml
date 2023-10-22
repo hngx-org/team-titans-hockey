@@ -11,16 +11,16 @@
         android:id="@+id/bckbtn"
         android:layout_width="45dp"
         android:layout_height="35dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="16dp"
-        android:src="@drawable/baseline_arrow_back_24"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="26dp"
+        android:src="@drawable/bckarrow"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:padding="16dp"
+        android:padding="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -38,7 +38,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/press_start_2p"
                 android:text="About"
-                android:textColor="#FFAB00"
+                android:textColor="#FF6D00"
                 android:textSize="24sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -51,7 +51,7 @@
                 android:layout_marginTop="30dp"
                 android:fontFamily="@font/press_start_2p"
                 android:text="About Hockey Challenge"
-                android:textColor="#00C853"
+                android:textColor="#06873C"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/abtTv" />
@@ -78,7 +78,7 @@
                 android:layout_marginTop="16dp"
                 android:fontFamily="@font/press_start_2p"
                 android:text="Key-Features"
-                android:textColor="#00C853"
+                android:textColor="#06873C"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView1" />
@@ -105,7 +105,7 @@
                 android:layout_marginTop="16dp"
                 android:fontFamily="@font/press_start_2p"
                 android:text="Meet the Development Team"
-                android:textColor="#00C853"
+                android:textColor="#06873C"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView4" />

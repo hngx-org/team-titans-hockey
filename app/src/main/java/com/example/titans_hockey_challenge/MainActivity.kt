@@ -11,8 +11,6 @@ import com.example.titans_hockey_challenge.viewmodels.SoundViewModel
 class MainActivity : AppCompatActivity() {
     private lateinit var binding : ActivityMainBinding
     private lateinit var navController: NavController
-    private val soundViewModel: SoundViewModel by viewModels()
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,9 +23,6 @@ class MainActivity : AppCompatActivity() {
         navController = navHostFragment.navController
 
     }
-
-
-
 
 
 }

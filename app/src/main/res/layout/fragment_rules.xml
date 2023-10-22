@@ -12,7 +12,7 @@
         android:layout_height="35dp"
         android:layout_marginStart="10dp"
         android:layout_marginTop="16dp"
-        android:src="@drawable/baseline_arrow_back_24"
+        android:src="@drawable/bckarrow"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -43,7 +43,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/press_start_2p"
                 android:text="How To Play"
-                android:textColor="#FFAB00"
+                android:textColor="#FF6D00"
                 android:textSize="24sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -57,7 +57,7 @@
                 android:layout_marginTop="30dp"
                 android:fontFamily="@font/press_start_2p"
                 android:text="Objective"
-                android:textColor="#00C853"
+                android:textColor="#08A549"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/abtTv" />
@@ -85,7 +85,7 @@
                 android:layout_marginTop="30dp"
                 android:fontFamily="@font/press_start_2p"
                 android:text="Game-Play"
-                android:textColor="#00C853"
+                android:textColor="#08A549"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView4" />
@@ -112,7 +112,7 @@
                 android:layout_marginTop="30dp"
                 android:fontFamily="@font/press_start_2p"
                 android:text="Strategies"
-                android:textColor="#00C853"
+                android:textColor="#08A549"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView5" />
