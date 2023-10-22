@@ -13,16 +13,29 @@
         <item name="colorPrimary">#1554F3</item>
     </style>
 
+    <style name="btnEasy" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">#DC1A1A</item>
+    </style>
+
+    <style name="btnNormal" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">#1554F3</item>
+    </style>
+
+    <style name="btnHard" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/dark_gray</item>
+    </style>
+
+
     <style name="btnSettings" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/dark_gray</item>
     </style>
 
     <style name="btnResumeGame" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/dark_gray</item>
+        <item name="colorPrimary">@color/black</item>
     </style>
 
     <style name="btnExitGame" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/dark_gray</item>
+        <item name="colorPrimary">@color/black</item>
     </style>
 
 </resources>

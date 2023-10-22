@@ -2,9 +2,11 @@ package com.example.titans_hockey_challenge
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.example.titans_hockey_challenge.databinding.ActivityMainBinding
+import com.example.titans_hockey_challenge.viewmodels.SoundViewModel
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding : ActivityMainBinding
@@ -21,4 +23,6 @@ class MainActivity : AppCompatActivity() {
         navController = navHostFragment.navController
 
     }
+
+
 }

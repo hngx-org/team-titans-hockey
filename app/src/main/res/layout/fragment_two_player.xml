@@ -6,8 +6,8 @@
     android:layout_height="match_parent"
     tools:context=".ui.hockeytable.HockeyFragment">
 
-    <com.example.titans_hockey_challenge.ui.hockeytable.HockeyTable
-        android:id="@+id/hockeyTable"
+    <com.example.titans_hockey_challenge.ui.twoplayertable.TwoPlayerHockeyTable
+        android:id="@+id/twoPlayerHockeyTable"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -16,7 +16,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tvScorePlayer"
+        android:id="@+id/tvScorePlayer1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="250dp"
@@ -32,18 +32,18 @@
         app:layout_constraintVertical_bias="0.0" />
 
     <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/imgPauseButton"
+        android:id="@+id/imgPauseButton2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:backgroundTint="@color/white"
         android:src="@drawable/ic_pause"
-        app:layout_constraintEnd_toStartOf="@+id/tvScoreOpponent"
-        app:layout_constraintStart_toEndOf="@+id/tvScorePlayer"
+        app:layout_constraintEnd_toStartOf="@+id/tvScorePlayer2"
+        app:layout_constraintStart_toEndOf="@+id/tvScorePlayer1"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tvScoreOpponent"
+        android:id="@+id/tvScorePlayer2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
@@ -59,12 +59,12 @@
         app:layout_constraintVertical_bias="0.0" />
 
     <TextView
-        android:id="@+id/tvStatus"
+        android:id="@+id/tvStatus2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="24dp"
         android:fontFamily="@font/play_bold"
-        android:text="@string/tap_start_screen"
+        android:text="@string/ready"
         android:textColor="@color/black"
         android:textSize="32sp"
         android:textStyle="bold"
@@ -75,7 +75,7 @@
         app:layout_constraintVertical_bias="0.7" />
 
     <LinearLayout
-        android:id="@+id/pauseOverlay"
+        android:id="@+id/pauseOverlay2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/semi_transparent_white"
@@ -90,7 +90,7 @@
         app:layout_constraintVertical_bias="0.0">
 
         <TextView
-            android:id="@+id/paused"
+            android:id="@+id/paused2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="15dp"
@@ -100,7 +100,7 @@
             android:textSize="38sp" />
 
         <Button
-            android:id="@+id/resumeGame"
+            android:id="@+id/resumeGame2"
             style="@style/Widget.AppCompat.Button"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
@@ -114,7 +114,7 @@
             android:theme="@style/btnResumeGame" />
 
         <Button
-            android:id="@+id/pauseMusic"
+            android:id="@+id/pauseMusic2"
             style="@style/Widget.AppCompat.Button"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
@@ -132,7 +132,7 @@
             android:theme="@style/btnResumeGame" />
 
         <Button
-            android:id="@+id/exitGame"
+            android:id="@+id/exitGame2"
             style="@style/Widget.AppCompat.Button"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
@@ -143,6 +143,5 @@
             android:textSize="20sp"
             android:textStyle="bold"
             android:theme="@style/btnExitGame" />
-
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

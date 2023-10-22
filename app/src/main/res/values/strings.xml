@@ -13,6 +13,7 @@
     <string name="player">0</string>
     <string name="opponent">1</string>
     <string name="tap_start_screen">Tap Screen to Start</string>
+    <string name="ready">Ready!</string>
     <string name="single_player">1 Player</string>
     <string name="multi_player">2-Players</string>
     <string name="hockey_challenge">Hockey Challenge</string>
@@ -38,16 +39,13 @@
     </string>
     <string name="sound"><![CDATA[\<Sound\>]]></string>
     <string name="on"><![CDATA[<ON>]]></string>
+    <string name="off"><![CDATA[<OFF>]]></string>
     <string name="how_to_play"><![CDATA[<How To Play>]]></string>
     <string name="about"><![CDATA[<About>]]></string>
     <string name="exit_game">Exit Game</string>
     <string name="resume_game">Resume</string>
-    <string name="paused">Paused</string>
-    <string name="customise"><![CDATA[<Customise>]]></string>
-    <string name="themes">Themes</string>
-    <string name="theme"><![CDATA[<Themes>]]></string>
-    <string name="paddle">Paddle</string>
-    <string name="puck">Puck</string>
+    <string name="paused">Game Paused</string>
+    <string name="sound_text">Sound</string>
 
 
 </resources>

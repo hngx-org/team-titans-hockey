@@ -10,28 +10,39 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        >
+
+
+        <ImageView
+            android:id="@+id/bckbtn"
+            android:layout_width="45dp"
+            android:layout_height="35dp"
+            android:src="@drawable/bckarrow"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
 
         <TextView
             android:id="@+id/settingTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
             android:fontFamily="@font/press_start_2p"
             android:text="@string/settings"
-            android:textColor="#FFAB00"
+            android:textColor="#FF8400"
             android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/bckbtn" />
 
 
         <TextView
             android:id="@+id/soundTv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="50dp"
             android:fontFamily="@font/press_start_2p"
             android:text="@string/sound"
             android:textColor="@color/player_color"
@@ -46,7 +57,7 @@
             android:id="@+id/switchTv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="50dp"
             android:fontFamily="@font/press_start_2p"
             android:text="@string/on"
             android:textColor="@color/opponent_color"
@@ -90,7 +101,7 @@
             android:layout_marginTop="30dp"
             android:fontFamily="@font/press_start_2p"
             android:text="@string/about"
-            android:textColor="#00C853"
+            android:textColor="#08A549"
             android:textSize="20sp"
             android:layout_marginBottom="20dp"
             app:layout_constraintBottom_toBottomOf="parent"

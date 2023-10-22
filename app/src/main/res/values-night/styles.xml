@@ -4,8 +4,7 @@
         <item name="android:textColor">@color/white</item>
     </style>
 
-    <style name="btnPlayer" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="colorPrimary">#DC1A1A</item>
-    </style>
+
+
 
 </resources>
