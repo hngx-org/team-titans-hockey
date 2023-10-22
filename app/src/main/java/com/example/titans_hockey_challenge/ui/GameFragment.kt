@@ -47,6 +47,7 @@ class GameFragment : Fragment() {
 
             btnSinglePlayer.setOnClickListener {
                 findNavController().navigate(R.id.levelsFragment)
+
             }
 
             btnMultiPlayer.setOnClickListener {

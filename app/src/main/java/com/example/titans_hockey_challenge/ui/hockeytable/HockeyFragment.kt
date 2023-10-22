@@ -2,6 +2,7 @@ package com.example.titans_hockey_challenge.ui.hockeytable
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.titans_hockey_challenge.R
 import com.example.titans_hockey_challenge.databinding.FragmentHockeyBinding
+import com.example.titans_hockey_challenge.viewmodels.LevelsDifficultySharedViewModel
 import com.example.titans_hockey_challenge.viewmodels.SoundViewModel
 import com.example.titans_hockey_challenge.utils.GameThread
 
@@ -21,6 +23,8 @@ class HockeyFragment : Fragment() {
     private var _binding: FragmentHockeyBinding? = null
     private val binding get() = _binding !!
     private val soundViewModel: SoundViewModel by activityViewModels()
+    private val levelsViewModel: LevelsDifficultySharedViewModel by activityViewModels()
+
     private var pauseBtnClicked = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -73,6 +77,13 @@ class HockeyFragment : Fragment() {
         binding.exitGame.setOnClickListener {
             findNavController().popBackStack(R.id.gameFragment, false)
         }
+
+
+        levelsViewModel.gameDifficulty.observe(viewLifecycleOwner) {
+            hockeyTable.aiSpeed = it
+        }
+
+
     }
 
     override fun onDestroy() {

@@ -9,19 +9,14 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.titans_hockey_challenge.R
 import com.example.titans_hockey_challenge.databinding.FragmentLevelsBinding
-import com.example.titans_hockey_challenge.models.HockeyTable
-import com.example.titans_hockey_challenge.models.LevelsDifficultyViewModel
+import com.example.titans_hockey_challenge.viewmodels.LevelsDifficultySharedViewModel
+import com.example.titans_hockey_challenge.ui.hockeytable.HockeyTable
 
 class LevelsFragment : Fragment() {
     lateinit var binding: FragmentLevelsBinding
-    private val levelsViewModel: LevelsDifficultyViewModel by activityViewModels()
+    private val levelsViewModel: LevelsDifficultySharedViewModel by activityViewModels()
 
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         binding = FragmentLevelsBinding.inflate(inflater, container, false)
         return binding.root
@@ -30,33 +25,22 @@ class LevelsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val hockeyTable = requireActivity().findViewById<HockeyTable>(R.id.hockeyTable)
-
         binding.apply {
 
-            bckbtn.setOnClickListener {
-                findNavController().navigate(R.id.gameFragment)
-            }
-
-            levelsViewModel.gameDifficulty.value?.let { difficulty ->
-                hockeyTable?.updateAISpeed(difficulty)
-            }
-
-
             easybtn.setOnClickListener {
-                levelsViewModel.setDifficultyLevel(30f) // Easy level
+                levelsViewModel.setEasyLevel()
                 findNavController().navigate(R.id.hockeyFragment)
 
             }
 
             normBtn.setOnClickListener {
-                levelsViewModel.setDifficultyLevel(50f) // Medium level
+                levelsViewModel.setMediumLevel()
                 findNavController().navigate(R.id.hockeyFragment)
 
             }
 
             hardBtn.setOnClickListener {
-                levelsViewModel.setDifficultyLevel(100f) // Hard level
+                levelsViewModel.setHardLevel()
                 findNavController().navigate(R.id.hockeyFragment)
             }
 

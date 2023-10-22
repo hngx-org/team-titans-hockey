@@ -5,16 +5,24 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
     tools:context=".ui.LevelsFragment">
 
-    <ImageView
-        android:id="@+id/bckbtn"
-        android:layout_width="45dp"
-        android:layout_height="35dp"
-        android:src="@drawable/baseline_arrow_back_24"
+
+    <View
+        android:layout_width="199dp"
+        android:layout_height="199dp"
+        android:background="@drawable/ellipse_48"
+        android:backgroundTint="#D0000000"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:layout_width="195dp"
+        android:layout_height="188dp"
+        android:background="@drawable/ellipse_48"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
     <ScrollView
         android:layout_width="match_parent"
@@ -26,15 +34,14 @@
             android:layout_height="match_parent"
             >
 
-            <TextView
+            <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/txxt"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="100dp"
                 android:layout_marginTop="30dp"
-                android:fontFamily="@font/press_start_2p"
-                android:text="Select Difficulty Level"
-                android:textColor="#FFAB00"
-                android:textSize="24sp"
+                app:lottie_rawRes="@raw/animationnn"
+                app:lottie_loop="true"
+                app:lottie_autoPlay="true"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -42,66 +49,79 @@
 
             <Button
                 android:id="@+id/easybtn"
-                style="@style/Widget.Material3.Button.OutlinedButton"
+                style="@style/Widget.AppCompat.Button"
                 android:layout_width="250dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
                 android:fontFamily="@font/press_start_2p"
                 android:padding="16dp"
-                android:text="EASY"
-                android:textColor="#019E42"
+                android:text="BEGINNER"
+                android:textColor="@color/white"
                 android:textSize="14sp"
-                app:cornerRadius="10dp"
+                android:theme="@style/btnEasy"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/txxt"
-                app:strokeColor="#000000"
-                app:strokeWidth="3dp" />
+                />
 
 
             <Button
                 android:id="@+id/normBtn"
-                style="@style/Widget.Material3.Button.OutlinedButton"
+                style="@style/Widget.AppCompat.Button"
                 android:layout_width="250dp"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/press_start_2p"
                 android:padding="16dp"
-                android:text="NORMAL"
-                android:textColor="#DD2C00"
+                android:text="INTERMIDIATE"
+                android:textColor="@color/white"
                 android:textSize="14sp"
-                app:cornerRadius="10dp"
-                android:layout_marginTop="30dp"
+                android:theme="@style/btnmid"
+
+                android:layout_marginTop="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/easybtn"
-                app:strokeColor="#000000"
-                app:strokeWidth="3dp" />
+                />
+
 
             <Button
                 android:id="@+id/hardBtn"
-                style="@style/Widget.Material3.Button.OutlinedButton"
+                style="@style/Widget.AppCompat.Button"
                 android:layout_width="250dp"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/press_start_2p"
                 android:padding="16dp"
-                android:text="HARD"
-                android:textColor="#D50000"
+                android:text="EXPERT"
+                android:textColor="@color/white"
                 android:textSize="14sp"
-                app:cornerRadius="13dp"
+                android:theme="@style/btnPlayer"
                 android:layout_marginBottom="8dp"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="20dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/normBtn"
                 app:strokeColor="#000000"
-                app:strokeWidth="3dp" />
+                />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="205dp"
+        android:layout_height="210dp"
+        android:background="@drawable/ellipse_49"
+        android:backgroundTint="#D8000000"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <View
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:background="@drawable/ellipse_49"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
