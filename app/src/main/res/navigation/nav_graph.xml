@@ -56,6 +56,9 @@
         <action
             android:id="@+id/action_settingsFragment_to_aboutFragment"
             app:destination="@id/aboutFragment" />
+        <action
+            android:id="@+id/to_customiseFragment"
+            app:destination="@id/customiseFragment" />
     </fragment>
     <fragment
         android:id="@+id/rulesFragment"
@@ -67,4 +70,9 @@
         android:name="com.example.titans_hockey_challenge.ui.AboutFragment"
         android:label="fragment_about"
         tools:layout="@layout/fragment_about" />
+    <fragment
+        android:id="@+id/customiseFragment"
+        android:name="com.example.titans_hockey_challenge.ui.ThemeFragment"
+        android:label="fragment_customise"
+        tools:layout="@layout/fragment_themes" />
 </navigation>

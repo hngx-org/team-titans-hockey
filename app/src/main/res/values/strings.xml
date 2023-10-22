@@ -25,7 +25,6 @@
 </string>
 
 
-
     <string name="abt">Hockey Challenge is an exhilarating hockey game that delivers thrilling and competitive gameplay and promises to bring the excitement of the classic air hockey arcade game to your mobile device.\nTake on the challenge in both single-player mode, facing off against AI opponents, and multiplayer mode, where you can go head-to-head with real opponents for the ultimate hockey showdown.</string>
 
     <string name="how_to_pay">Settings</string>
@@ -44,6 +43,11 @@
     <string name="exit_game">Exit Game</string>
     <string name="resume_game">Resume</string>
     <string name="paused">Paused</string>
+    <string name="customise"><![CDATA[<Customise>]]></string>
+    <string name="themes">Themes</string>
+    <string name="theme"><![CDATA[<Themes>]]></string>
+    <string name="paddle">Paddle</string>
+    <string name="puck">Puck</string>
 
 
 </resources>

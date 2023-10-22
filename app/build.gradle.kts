@@ -53,4 +53,11 @@ dependencies {
     implementation("androidx.navigation:navigation-ui-ktx:$nav_version")
 
     implementation ("com.airbnb.android:lottie:6.1.0")
+
+    // Color Picker
+    implementation ("com.github.Dhaval2404:ColorPicker:2.3")
+
+    // ViewModel
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
+    implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
 }

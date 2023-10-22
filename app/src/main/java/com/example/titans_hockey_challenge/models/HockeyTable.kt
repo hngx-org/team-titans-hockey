@@ -18,9 +18,7 @@ import androidx.core.content.ContextCompat
 import com.example.titans_hockey_challenge.R
 import com.example.titans_hockey_challenge.utils.GameThread
 import com.example.titans_hockey_challenge.utils.PUCK_SPEED
-import com.example.titans_hockey_challenge.utils.RACQUET_SPEED
 import com.example.titans_hockey_challenge.utils.STATE_LOSE
-import com.example.titans_hockey_challenge.utils.STATE_PAUSED
 import com.example.titans_hockey_challenge.utils.STATE_RUNNING
 import com.example.titans_hockey_challenge.utils.STATE_WIN
 import java.util.Random
@@ -39,6 +37,11 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
     var puck: Puck? = null
         private set
     private var mNetPaint: Paint? = null
+    private var mPuckPaint: Paint? = null
+    private var mPuckInnerPaint: Paint? = null
+    private var mPaddlePaint: Paint? = null
+    private var mPaddleMiddlePaint: Paint? = null
+    private var mPaddleOuterPaint: Paint? = null
     private var mGoalPostBoundsPaint: Paint? = null
     private var mTableBoundsPaint: Paint? = null
     private var mTableWidth = 0
@@ -56,7 +59,6 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
     private var losingSound: MediaPlayer? = null
     private var wallHitSound: MediaPlayer? = null
     private var goalPostHitSound: MediaPlayer? = null
-
 
     fun initHockeyTable(ctx: Context, attr: AttributeSet?) {
         mContext = ctx
@@ -82,19 +84,19 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
         val puckRadius = a.getInteger(R.styleable.HockeyTable_puckRadius, 40)
 
         // Set Player
-        val playerPaint = Paint()
-        playerPaint.isAntiAlias = true
-        playerPaint.color = ContextCompat.getColor(mContext!!, R.color.player_color)
+        mPaddlePaint = Paint()
+        mPaddlePaint!!.isAntiAlias = true
+        mPaddlePaint!!.color = ContextCompat.getColor(mContext!!, R.color.player_color)
 
-        val playerMiddlePaint = Paint()
-        playerMiddlePaint.isAntiAlias = true
-        playerMiddlePaint.style = Paint.Style.FILL
-        playerMiddlePaint.color = ContextCompat.getColor(mContext!!, R.color.player_middle_color)
+        mPaddleMiddlePaint = Paint()
+        mPaddleMiddlePaint!!.isAntiAlias = true
+        mPaddleMiddlePaint!!.style = Paint.Style.FILL
+        mPaddleMiddlePaint!!.color = ContextCompat.getColor(mContext!!, R.color.player_middle_color)
 
-        val playerOuterPaint = Paint()
-        playerOuterPaint.style = Paint.Style.FILL
-        playerOuterPaint.color = ContextCompat.getColor(mContext!!, R.color.player_outer_color)
-        paddle = Paddle(strikerWidth, strikerHeight, paint = playerPaint, middlePaint = playerMiddlePaint, outerPaint = playerOuterPaint)
+        mPaddleOuterPaint = Paint()
+        mPaddleOuterPaint!!.style = Paint.Style.FILL
+        mPaddleOuterPaint!!.color = ContextCompat.getColor(mContext!!, R.color.player_outer_color)
+        paddle = Paddle(strikerWidth, strikerHeight, paint = mPaddlePaint!!, middlePaint = mPaddleMiddlePaint!!, outerPaint = mPaddleOuterPaint!!)
 
         // Set Opponent
         val opponentPaint = Paint()
@@ -112,12 +114,12 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
         mOpponent = Paddle(strikerWidth, strikerHeight, paint = opponentPaint, middlePaint = opponentMiddlePaint, outerPaint = opponentOuterPaint)
 
         // Set Puck
-        val puckPaint = Paint()
-        puckPaint.color = ContextCompat.getColor(mContext!!, R.color.puck_color)
+        mPuckPaint = Paint()
+        mPuckPaint!!.color = ContextCompat.getColor(mContext!!, R.color.puck_color)
 
-        val puckInnerPaint = Paint()
-        puckInnerPaint.color = ContextCompat.getColor(mContext!!, R.color.dark_gray)
-        puck = Puck(puckRadius.toFloat(), puckPaint, puckInnerPaint)
+        mPuckInnerPaint = Paint()
+        mPuckInnerPaint!!.color = ContextCompat.getColor(mContext!!, R.color.dark_gray)
+        puck = Puck(puckRadius.toFloat(), mPuckPaint!!, mPuckInnerPaint!!)
 
         // Draw circular and middle line
         mNetPaint = Paint()
@@ -501,6 +503,25 @@ class HockeyTable : SurfaceView, SurfaceHolder.Callback {
         mTableBoundsPaint!!.color = color
     }
 
+    fun setPuckColor(color: Int) {
+        mPuckPaint?.color = color
+    }
+
+    fun setPuckInnerColor(color: Int) {
+        mPuckInnerPaint?.color = color
+    }
+
+    fun setPaddleColor(color: Int) {
+        mPaddlePaint?.color = color
+    }
+
+    fun setPaddleMiddleColor(color: Int) {
+        mPaddleMiddlePaint?.color = color
+    }
+
+    fun setPaddleOuterColor(color: Int) {
+        mPaddleOuterPaint?.color = color
+    }
 
     private fun releaseSounds() {
         puckHitSound?.release()

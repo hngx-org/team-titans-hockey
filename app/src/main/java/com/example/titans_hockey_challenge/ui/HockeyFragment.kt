@@ -5,8 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.titans_hockey_challenge.R
+import com.example.titans_hockey_challenge.ThemeViewModel
 import com.example.titans_hockey_challenge.databinding.FragmentHockeyBinding
 import com.example.titans_hockey_challenge.models.HockeyTable
 import com.example.titans_hockey_challenge.utils.GameThread
@@ -17,6 +19,8 @@ class HockeyFragment : Fragment() {
 
     private var _binding: FragmentHockeyBinding? = null
     private val binding get() = _binding !!
+
+    private val themeViewModel: ThemeViewModel by activityViewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         // Inflate the layout for this fragment
@@ -48,6 +52,26 @@ class HockeyFragment : Fragment() {
 
         binding.exitGame.setOnClickListener {
             findNavController().popBackStack(R.id.gameFragment, false)
+        }
+
+        themeViewModel.puckColor.observe(viewLifecycleOwner) { color ->
+            hockeyTable.setPuckColor(color)
+        }
+
+        themeViewModel.puckInnerColor.observe(viewLifecycleOwner) { color ->
+            hockeyTable.setPuckInnerColor(color)
+        }
+
+        themeViewModel.paddleColor.observe(viewLifecycleOwner) { color ->
+            hockeyTable.setPaddleColor(color)
+        }
+
+        themeViewModel.paddleMiddleColor.observe(viewLifecycleOwner) { color ->
+            hockeyTable.setPaddleMiddleColor(color)
+        }
+
+        themeViewModel.paddleOuterColor.observe(viewLifecycleOwner) { color ->
+            hockeyTable.setPaddleOuterColor(color)
         }
     }
 

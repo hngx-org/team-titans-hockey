@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="red">#FF0000</color>
@@ -24,4 +24,27 @@
     <color name="dark_gray">#FF373A38</color>
     <color name="semi_transparent_white">#80FFFFFF</color>
     <color name="semi_transparent_light_gray">#80CCCCCC</color>
+
+    // Dialog colors
+    <color name="positiveButtonTextColor">@color/green</color>
+    <color name="negativeButtonTextColor">@color/red</color>
+    <color name="bottomSheetDividerColor">@color/grey_200</color>
+
+    <array name="themeColors">
+        <item>@color/green_500</item>
+        <item>@color/blue_500</item>
+        <item>@color/red_500</item>
+        <item>@color/grey_500</item>
+        <item>@color/orange_500</item>
+        <item>@color/teal_500</item>
+        <item>@color/pink_500</item>
+        <item>@color/purple_500</item>
+        <item>@color/blue_500</item>
+        <item>@color/cyan_500</item>
+        <item>@color/indigo_500</item>
+        <item>@color/lime_500</item>
+        <item>@color/brown_500</item>
+        <item>@color/deep_purple_500</item>
+        <item>@color/deep_orange_500</item>
+    </array>
 </resources>

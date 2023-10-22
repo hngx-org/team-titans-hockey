@@ -32,6 +32,10 @@ class SettingsFragment : Fragment() {
 
             }
 
+            themeTV.setOnClickListener {
+                findNavController().navigate(R.id.customiseFragment)
+            }
+
             howToPlayTV.setOnClickListener {
                findNavController().navigate(R.id.rulesFragment)
             }
@@ -41,15 +45,6 @@ class SettingsFragment : Fragment() {
                 findNavController().navigate(R.id.aboutFragment)
 
             }
-
-
-
-
-
-
         }
-
     }
-
-
 }
