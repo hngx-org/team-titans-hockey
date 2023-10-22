@@ -33,7 +33,7 @@ class SettingsFragment : Fragment() {
             }
 
             themeTV.setOnClickListener {
-                findNavController().navigate(R.id.customiseFragment)
+                findNavController().navigate(R.id.themeFragment)
             }
 
             howToPlayTV.setOnClickListener {
