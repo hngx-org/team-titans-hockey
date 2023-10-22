@@ -9,10 +9,10 @@ class LevelsDifficultySharedViewModel : ViewModel() {
     val gameDifficulty: LiveData<Float> get() = _gameDifficulty
 
     fun setEasyLevel() {
-        _gameDifficulty.value = 8f
+        _gameDifficulty.value = 5f
     }
     fun setMediumLevel() {
-        _gameDifficulty.value = 15f
+        _gameDifficulty.value = 10f
     }
     fun setHardLevel() {
         _gameDifficulty.value = 25f

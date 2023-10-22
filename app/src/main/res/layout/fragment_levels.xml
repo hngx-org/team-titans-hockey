@@ -37,7 +37,7 @@
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/txxt"
                 android:layout_width="wrap_content"
-                android:layout_height="100dp"
+                android:layout_height="110dp"
                 android:layout_marginTop="30dp"
                 app:lottie_rawRes="@raw/animationnn"
                 app:lottie_loop="true"
@@ -50,59 +50,53 @@
             <Button
                 android:id="@+id/easybtn"
                 style="@style/Widget.AppCompat.Button"
-                android:layout_width="250dp"
+                android:layout_width="140dp"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/press_start_2p"
-                android:padding="16dp"
-                android:text="BEGINNER"
+                android:text="EASY"
                 android:textColor="@color/white"
-                android:textSize="14sp"
+                android:textSize="16sp"
                 android:theme="@style/btnEasy"
+                android:layout_marginTop="15dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/txxt"
-                />
-
+                app:strokeWidth="2dp" />
 
             <Button
                 android:id="@+id/normBtn"
                 style="@style/Widget.AppCompat.Button"
-                android:layout_width="250dp"
+                android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/press_start_2p"
-                android:padding="16dp"
-                android:text="INTERMIDIATE"
+                android:text="NORMAL"
                 android:textColor="@color/white"
-                android:textSize="14sp"
-                android:theme="@style/btnmid"
-
-                android:layout_marginTop="20dp"
+                android:textSize="15sp"
+                android:theme="@style/btnNormal"
+                android:layout_marginTop="10dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/easybtn"
-                />
-
+                app:strokeWidth="2dp"/>
 
             <Button
                 android:id="@+id/hardBtn"
                 style="@style/Widget.AppCompat.Button"
-                android:layout_width="250dp"
+                android:layout_width="145dp"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/press_start_2p"
-                android:padding="16dp"
-                android:text="EXPERT"
+                android:text="HARD"
                 android:textColor="@color/white"
                 android:textSize="14sp"
-                android:theme="@style/btnPlayer"
-                android:layout_marginBottom="8dp"
-                android:layout_marginTop="20dp"
+                android:theme="@style/btnHard"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="10dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/normBtn"
-                app:strokeColor="#000000"
-                />
+                app:strokeWidth="2dp"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

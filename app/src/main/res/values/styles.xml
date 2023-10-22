@@ -14,11 +14,15 @@
     </style>
 
     <style name="btnEasy" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="colorPrimary">#2F6E07</item>
+        <item name="colorPrimary">#DC1A1A</item>
     </style>
 
-    <style name="btnmid" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="colorPrimary">#DD2C00</item>
+    <style name="btnNormal" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">#1554F3</item>
+    </style>
+
+    <style name="btnHard" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/dark_gray</item>
     </style>
 
 
